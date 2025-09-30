@@ -1,3 +1,4 @@
+import { IsEmail, IsNotEmpty } from "class-validator";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -5,19 +6,24 @@ export class Usuario {
   @PrimaryGeneratedColumn()
   ID_usuario: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ length: 255 })
+  @IsNotEmpty()
   nome: string;
 
   @Column()
+  @IsNotEmpty()
   CPF: number;
   
-  @Column({ type: 'varchar', length: 255 })
+  @Column()
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ length: 255 })
+  @IsNotEmpty()
   senha: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  ativo: string;
+  @Column()
+  ativo: boolean;
 
 }

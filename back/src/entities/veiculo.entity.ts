@@ -1,3 +1,4 @@
+import { IsNotEmpty } from "class-validator";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -5,16 +6,20 @@ export class Veiculo {
   @PrimaryGeneratedColumn()
   ID_veiculo: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ length: 255 })
+  @IsNotEmpty()
   montadora: string;
   
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ length: 255 })
+  @IsNotEmpty()
   modelo: string;
 
-  @Column({ type: 'varchar', length: 7 })
+  @Column({ length: 7 })
+  @IsNotEmpty()
   placa: string;
 
   @Column()
+  @IsNotEmpty()
   capacidade: number;
 
   @Column()
