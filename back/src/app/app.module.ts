@@ -10,6 +10,7 @@ import { UsuarioModule } from 'src/modules/usuario.module';
 import { ViagemModule } from 'src/modules/viagem.module';
 import { RotaModule } from 'src/modules/rota.module';
 import { ParadaModule } from 'src/modules/parada.module';
+import { ValidacaoModule } from 'src/modules/validacao.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ParadaModule } from 'src/modules/parada.module';
     ViagemModule,
     RotaModule,
     ParadaModule,
+    ValidacaoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

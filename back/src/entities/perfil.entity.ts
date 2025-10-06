@@ -11,7 +11,6 @@ export class Perfil {
   @IsNotEmpty()
   nome: string;
 
-  @OneToMany( () => Usuario , usuario => usuario.perfil) 
-  @JoinColumn({ name: 'usuarios' })
+  @OneToMany( () => Usuario , usuario => usuario.perfil_usuario) 
   usuarios: Usuario[];
 }

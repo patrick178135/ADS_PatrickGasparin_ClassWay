@@ -1,5 +1,6 @@
 import { IsNotEmpty } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Viagem } from "./viagem.entity";
 
 @Entity()
 export class Veiculo {
@@ -14,7 +15,7 @@ export class Veiculo {
   @IsNotEmpty()
   modelo: string;
 
-  @Column({ length: 7 })
+  @Column()
   @IsNotEmpty()
   placa: string;
 
@@ -23,5 +24,10 @@ export class Veiculo {
   capacidade: number;
 
   @Column()
+  @IsNotEmpty()
   ativo: boolean;
+
+  @OneToMany( () => Viagem , viagem => viagem.veiculo)
+  @JoinColumn({ name: 'viagens' }) 
+  viagens: Viagem[];
 }
