@@ -20,7 +20,7 @@ export class UsuarioService {
                 email: createUsuarioDto.email,
                 senha: createUsuarioDto.senha,
                 ativo: createUsuarioDto.ativo,
-                perfil: createUsuarioDto.perfil,
+                perfil_usuario: createUsuarioDto.perfil_usuario,
                 cidade: createUsuarioDto.cidade,
             };
 
@@ -53,16 +53,17 @@ export class UsuarioService {
             throw new NotFoundException('Usuario não encontrado');
         }
 
-        return Usuario;
+        return usuario;
     }
 
     async update(ID_usuario: number, updateUsuarioDto: UpdateUsuarioDto) {
         const dadosUsuario = {
-            nome: updateUsuarioDto?.nome,
-            cpf: updateUsuarioDto.CPF,
+            nome: updateUsuarioDto.nome,
+            CPF: updateUsuarioDto.CPF,
             email: updateUsuarioDto.email,
             senha: updateUsuarioDto.senha,
-            perfil: updateUsuarioDto.perfil,
+            ativo: updateUsuarioDto.ativo,
+            perfil_usuario: updateUsuarioDto.perfil_usuario,
             cidade: updateUsuarioDto.cidade,
         };
 
@@ -84,5 +85,5 @@ export class UsuarioService {
           throw new Error("Usuário não encontrado");
         }
         return this.usuarioRepository.remove(usuario);
-      }
+    }
 }

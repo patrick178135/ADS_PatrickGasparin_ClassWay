@@ -1,7 +1,9 @@
 import { IsEmail, IsNotEmpty } from "class-validator";
-import { Column, Entity, IntegerType, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, IntegerType, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Perfil } from "./perfil.entity";
 import { Cidade } from "./cidade.entity";
+import { Viagem } from "./viagem.entity";
+import { Validacao } from "./validacao.entiy";
 
 @Entity()
 export class Usuario {
@@ -29,15 +31,31 @@ export class Usuario {
   @IsNotEmpty()
   ativo: boolean;
 
-  
-  @OneToOne(() => Perfil)
+  @ManyToOne(() => Perfil, perfil => perfil.ID_perfil)
+  @JoinColumn({ name: 'perfil_usuario' })
   @Column()
   @IsNotEmpty()
-  perfil: number;
+  perfil_usuario: number;
 
-  @OneToOne(() => Cidade)
+  @ManyToOne(() => Cidade, cidade => cidade.ID_cidade)
+  @JoinColumn({ name: 'cidade' })
   @Column()
   @IsNotEmpty()
   cidade: number;
+
+  @ManyToMany(() => Viagem, (vaigem:Viagem) => vaigem.alunos)
+  viagens: Viagem[];
+
+  @OneToMany( () => Viagem , viagem => viagem.admin)
+  @JoinColumn({ name: 'admins' }) 
+  admins: Usuario[];
+
+  @OneToMany( () => Viagem , viagem => viagem.motorista)
+  @JoinColumn({ name: 'motoristas' }) 
+  motoristas: Usuario[];
+
+  @OneToMany( () => Validacao , validacao => validacao.aluno)
+  @JoinColumn({ name: 'validacoes' }) 
+  validacoes: Validacao[];
 
 }
