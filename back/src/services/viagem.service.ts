@@ -2,8 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateViagemDto } from 'src/dto/create-viagem.dto';
 import { UpdateViagemDto } from 'src/dto/update-viagem.dto';
+import { Usuario } from 'src/entities/usuario.entity';
 import { Viagem } from 'src/entities/viagem.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class ViagemService {
@@ -11,26 +12,42 @@ export class ViagemService {
     constructor(
         @InjectRepository(Viagem)
         private readonly viagemRepository: Repository<Viagem>,
+
+        @InjectRepository(Usuario)
+        private readonly usuarioRepository: Repository<Usuario>,
     ) { }
 
     async create(createViagemDto: CreateViagemDto) {
         try {
-            const dadosViagem = {
-                nome: createViagemDto.nome,
-                data: createViagemDto.data,
-                admin: createViagemDto.admin,
-                motorista: createViagemDto.motorista,
-                rota: createViagemDto.rota,
-                veiculo: createViagemDto.veiculo,
-            };
-
-            const novaViagem = this.viagemRepository.create(dadosViagem);
-            await this.viagemRepository.save(dadosViagem);
-
-            return (novaViagem);
+          const { nome, data, admin, motorista, rota, veiculo, alunos } = createViagemDto;
+      
+          // Buscar todos os usuários com base nos IDs enviados
+          const alunosEntities = await this.usuarioRepository.findBy({
+            ID_usuario: In(alunos),
+          });
+      
+          // Garantir que todas os usuários existam
+          if (alunosEntities.length !== alunos.length) {
+            throw new Error("Um ou mais usuários informados não existem");
+          }
+      
+          // Criar a nova viagem já com as entidades
+          const novaViagem = this.viagemRepository.create({
+            nome, 
+            data, 
+            admin, 
+            motorista, 
+            rota, 
+            veiculo, 
+            alunos : alunosEntities, // aqui vai a lista de entidades
+          });
+      
+          await this.viagemRepository.save(novaViagem);
+      
+          return novaViagem;
         } catch (error) {
-
-            throw error;
+          console.error("Erro ao criar viagem:", error);
+          throw error;
         }
     }
 
@@ -57,24 +74,35 @@ export class ViagemService {
     }
 
     async update(ID_viagem: number, updateViagemDto: UpdateViagemDto) {
-        const dadosViagem = {
-            nome: updateViagemDto.nome,
-            data: updateViagemDto.data,
-            admin: updateViagemDto.admin,
-            motorista: updateViagemDto.motorista,
-            rota: updateViagemDto.rota,
-            veiculo: updateViagemDto.veiculo,
-        };
+        const { nome, data, admin, motorista, rota, veiculo, alunos } = updateViagemDto;
+      
+        let alunosEntities: Usuario[] | undefined;
 
+            if (alunos && alunos.length > 0) {
+            alunosEntities = await this.usuarioRepository.findBy({
+                ID_usuario: In(alunos),
+            });
+
+            if (!alunosEntities || alunosEntities.length !== alunos.length) {
+                throw new NotFoundException("Um ou mais alunos informados não existem");
+                }
+            }
+      
         const viagem = await this.viagemRepository.preload({
             ID_viagem,
-            ...dadosViagem,
+            nome, 
+            data, 
+            admin, 
+            motorista, 
+            rota, 
+            veiculo, 
+          ...(alunosEntities ? { alunos: alunosEntities } : {}),
         });
-
+      
         if (!viagem) {
-            throw new NotFoundException('Viagem não encontrada.');
+          throw new NotFoundException('Viagem não encontrada.');
         }
-
+      
         return this.viagemRepository.save(viagem);
     }
 
