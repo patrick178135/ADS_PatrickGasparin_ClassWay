@@ -25,7 +25,7 @@ export class Rota {
   @IsNotEmpty()
   destino : number;
 
-  @ManyToMany(() => Parada, (parada:Parada) => parada.rotas)
+  @ManyToMany(() => Parada, (parada:Parada) => parada.rotas,  {onDelete : "CASCADE", onUpdate : "CASCADE"})
   @JoinTable()
   paradas: Parada[];
  

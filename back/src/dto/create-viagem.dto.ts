@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsBoolean, IsDate, IsDateString, IsEmail, isInt, IsInt, IsNotEmpty, MaxLength, Min, min, MinLength } from "class-validator";
+import { IsArray, IsBoolean, IsDate, IsDateString, IsEmail, isInt, IsInt, IsNotEmpty, MaxLength, Min, min, MinLength } from "class-validator";
 
 export class CreateViagemDto {
   
@@ -26,5 +26,8 @@ export class CreateViagemDto {
     @IsInt()
     @Min(1)
     veiculo: number;
+
+    @IsArray()
+    alunos: number[];
 
 }
