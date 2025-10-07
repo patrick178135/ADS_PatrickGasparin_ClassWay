@@ -42,7 +42,7 @@ export class Viagem {
   @IsNotEmpty()
   rota: number;
   
-  @ManyToMany(() => Usuario, (usuario:Usuario) => usuario.viagens)
+  @ManyToMany(() => Usuario, (usuario:Usuario) => usuario.viagens, {onDelete : "CASCADE", onUpdate : "CASCADE"})
   @JoinTable()
   alunos: Usuario[];
 
