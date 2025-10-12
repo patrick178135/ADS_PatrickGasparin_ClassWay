@@ -18,14 +18,14 @@ export class Usuario {
   @IsNotEmpty()
   CPF: string;  
   
-  @Column()
+  @Column({ unique: true })
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
   @Column({ length: 255 })
   @IsNotEmpty()
-  senha: string;
+  senhaHash: string;
 
   @Column()
   @IsNotEmpty()
