@@ -1,8 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { UsuarioService } from '../services/usuario.service';
 import { CreateUsuarioDto } from 'src/dto/create-usuario.dto';
 import { UpdateUsuarioDto } from 'src/dto/update-usuario.dto';
+import { AuthTokenGuard } from 'src/auth/guards/auth-token.guards';
+import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
   
+// @UseGuards(AuthTokenGuard) // bloqueia as todas as rotas (necessário TOKEN)
 @Controller('usuario')
 export class UsuarioController {
 constructor(private readonly usuarioService: UsuarioService) {}
@@ -13,8 +16,9 @@ constructor(private readonly usuarioService: UsuarioService) {}
     }
 
     @Get()
-    findAll() {
-    return this.usuarioService.findAll();
+    findAll(@Req() req: Request) {
+        // console.log(req[REQUEST_TOKEN_PAYLOAD_KEY].email); dados vai TOKEN
+        return this.usuarioService.findAll();
     }
 
     @Get(':id')
