@@ -11,6 +11,7 @@ import { ViagemModule } from 'src/modules/viagem.module';
 import { RotaModule } from 'src/modules/rota.module';
 import { ParadaModule } from 'src/modules/parada.module';
 import { ValidacaoModule } from 'src/modules/validacao.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ValidacaoModule } from 'src/modules/validacao.module';
     RotaModule,
     ParadaModule,
     ValidacaoModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
