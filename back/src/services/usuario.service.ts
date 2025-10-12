@@ -1,5 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HashingService } from 'src/auth/hashing/hashing.service';
 import { CreateUsuarioDto } from 'src/dto/create-usuario.dto';
 import { UpdateUsuarioDto } from 'src/dto/update-usuario.dto';
 import { Usuario } from 'src/entities/usuario.entity';
@@ -10,15 +11,19 @@ export class UsuarioService {
     constructor(
         @InjectRepository(Usuario)
         private readonly usuarioRepository: Repository<Usuario>,
+        private readonly hashingService: HashingService,
     ) { }
 
     async create(createUsuarioDto: CreateUsuarioDto) {
         try {
+
+            const senhaHash = await this.hashingService.hash(createUsuarioDto.senha)
+
             const dadosUsuario = {
                 nome: createUsuarioDto.nome,
                 CPF: createUsuarioDto.CPF,
                 email: createUsuarioDto.email,
-                senha: createUsuarioDto.senha,
+                senhaHash,
                 ativo: createUsuarioDto.ativo,
                 perfil_usuario: createUsuarioDto.perfil_usuario,
                 cidade: createUsuarioDto.cidade,
@@ -57,11 +62,19 @@ export class UsuarioService {
     }
 
     async update(ID_usuario: number, updateUsuarioDto: UpdateUsuarioDto) {
+
+        let senhaHash: string | undefined;
+
+        // Se vier uma nova senha, gera o hash
+        if (updateUsuarioDto?.senha) {
+            senhaHash = await this.hashingService.hash(updateUsuarioDto.senha);
+        }
+
         const dadosUsuario = {
             nome: updateUsuarioDto.nome,
             CPF: updateUsuarioDto.CPF,
             email: updateUsuarioDto.email,
-            senha: updateUsuarioDto.senha,
+            senhaHash: senhaHash,
             ativo: updateUsuarioDto.ativo,
             perfil_usuario: updateUsuarioDto.perfil_usuario,
             cidade: updateUsuarioDto.cidade,
