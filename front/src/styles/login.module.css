@@ -1,0 +1,45 @@
+.container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  
+  background-image: url("/img/Login.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.formBox {
+  background-color: rgba(176, 48, 48, 0.9);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(224, 4, 4, 0.2);
+  text-align: center;
+  width: 320px;
+}
+
+.formBox input {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.formBox button {
+  background-color: #f94b00;
+  color: rgb(0, 0, 0);
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.formBox button:hover {
+  background-color: #a37968;
+}
