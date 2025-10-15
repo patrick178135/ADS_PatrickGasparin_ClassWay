@@ -26,19 +26,25 @@ export class AuthService {
             email: loginDto.email,
         });
 
+        console.log("Usuário encontrado:", usuario);
+
         if (!usuario){
             throw new UnauthorizedException("Usuário não encontrado")
         }
 
+        console.log("Comparando senha...");
         const senhaIsValid =  await this.hashingService.compare(
             loginDto.senha,
             usuario.senhaHash,
         );
 
+        console.log("Senha válida?", senhaIsValid);
+
         if (!senhaIsValid){
             throw new UnauthorizedException("Senha inválida")
         }
 
+        console.log("Gerando token JWT...");
         const accessToken = await this.jwtService.signAsync(
             {
                 sub: usuario.ID_usuario,
@@ -52,6 +58,9 @@ export class AuthService {
                 expiresIn: this.jwtConfiguration.jwtTtl,
             }
         )
+
+        console.log("Token gerado com sucesso!");
+        console.log("Token:", accessToken);
 
         return{
             accessToken
