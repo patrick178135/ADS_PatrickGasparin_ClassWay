@@ -3,8 +3,6 @@ import { Button, Container, Form, FormControl, FormGroup, FormLabel, Table, Imag
 import UsuarioService from '@/src/services/usuario.service';
 import { useRouter } from 'next/router';
 
-
-
 const Login = () => {
   type Usuario = {
     ID_usuario?: number;
@@ -32,14 +30,10 @@ const Login = () => {
   const router = useRouter();
 
 
-
-
   const fetchUsuarios = async () => {
     const resultado = await UsuarioService.getUsuarios();
     setListaUsuarios(resultado);
   };
-
-
 
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,8 +66,6 @@ const Login = () => {
     }
 
   };
-
-
 
 
   return (
