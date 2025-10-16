@@ -16,6 +16,8 @@ type Usuario = {
   ID_usuario?: number;
   nome: string;
   email: string;
+  senhaHash: string;
+  perfil_usuario: string;
 };
 
 const Usuarios = () => {
@@ -25,6 +27,8 @@ const Usuarios = () => {
   const [currentUser, setCurrentUser] = useState<Usuario>({
     nome: "",
     email: "",
+    senhaHash: "",
+    perfil_usuario: "",
   });
 
   useEffect(() => {
@@ -63,8 +67,8 @@ const Usuarios = () => {
           <tr>
             <th>Name</th>
             <th>Email</th>
-            <th>Password</th>
-            <th>Actions</th>
+            <th>Senha</th>
+            <th>Perfil</th>
           </tr>
         </thead>
         <tbody>
@@ -74,11 +78,8 @@ const Usuarios = () => {
             <tr key={usuario.ID_usuario}>
               <td>{usuario.nome}</td>
               <td>{usuario.email}</td>
-              <td>
-                <Button variant="warning">
-                  <FaEdit></FaEdit>
-                </Button>
-              </td>
+              <td>{usuario.senhaHash}</td>
+              <td>{usuario.perfil_usuario}</td>
             </tr>
           ))}
         </tbody>
