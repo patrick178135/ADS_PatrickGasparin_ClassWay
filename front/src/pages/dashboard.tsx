@@ -1,15 +1,17 @@
-import React from 'react';
-import Navbar from '@/src/components/NavBar';
+import { useAuth } from "@/src/context/AuthContext";
 
 const Dashboard = () => {
+  const { usuario, loading } = useAuth();
+
+  if (loading) return <p>Carregando...</p>; // evita renderizar antes de carregar o token
+  if (!usuario) return <p>Usuário não logado</p>;
+
   return (
-    <>
-      <Navbar />
-      <main className="p-4">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p>Bem-vindo ao painel!</p>
-      </main>
-    </>
+    <div>
+      <h1>Dashboard</h1>
+      <p>Bem-vindo, {usuario.email}!</p>
+      <p>Perfil: {usuario.perfil}</p>
+    </div>
   );
 };
 
