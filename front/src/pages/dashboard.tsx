@@ -1,16 +1,19 @@
+import { useEffect } from "react";
 import { useAuth } from "@/src/context/AuthContext";
 
 const Dashboard = () => {
-  const { usuario, loading } = useAuth();
+  const { usuario, loading, carregarUsuario } = useAuth();
 
-  if (loading) return <p>Carregando...</p>; // evita renderizar antes de carregar o token
+  useEffect(() => {
+    carregarUsuario(); 
+  }, []);
+
+  if (loading) return <p>Carregando...</p>;
   if (!usuario) return <p>Usuário não logado</p>;
 
   return (
     <div>
       <h1>Dashboard</h1>
-      <p>Bem-vindo, {usuario.email}!</p>
-      <p>Perfil: {usuario.perfil}</p>
     </div>
   );
 };

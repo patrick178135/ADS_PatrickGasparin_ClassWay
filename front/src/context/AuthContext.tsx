@@ -9,20 +9,22 @@ interface UsuarioToken {
 
 interface AuthContextType {
   usuario?: UsuarioToken;
-  setUsuario: (usuario?: UsuarioToken) => void; // <- novo
+  setUsuario: (usuario?: UsuarioToken) => void;
   loading: boolean;
+  carregarUsuario: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   loading: true,
-  setUsuario: () => {}
+  setUsuario: () => {},
+  carregarUsuario: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [usuario, setUsuario] = useState<UsuarioToken>();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const carregarUsuario = () => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
@@ -30,13 +32,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUsuario(decoded);
       } catch (error) {
         console.error("Erro ao decodificar token:", error);
+        setUsuario(undefined);
       }
+    } else {
+      setUsuario(undefined);
     }
+  };
+
+  useEffect(() => {
+    carregarUsuario();
     setLoading(false);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ usuario, setUsuario, loading }}>
+    <AuthContext.Provider value={{ usuario, setUsuario, loading, carregarUsuario }}>
       {children}
     </AuthContext.Provider>
   );
