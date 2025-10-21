@@ -5,6 +5,20 @@ const api = axios.create({
 });
 
 class UsuarioService {
+
+  async addUsuario(data: any) {
+    try {
+      const response = await api.post("/usuario", data);
+      return response; // retorna o objeto completo (status, data etc.)
+    } catch (error) {
+      console.error("Erro ao adicionar usuário:", error);
+      throw error;
+    } finally {
+      console.log("Requisição de cadastro finalizada");
+    }
+  }
+
+
   async getUsuarios() {
     try {
       const response = await api.get("/usuario");
@@ -15,6 +29,7 @@ class UsuarioService {
     }
   }
 
+  
   async login(data: { email: string; senha: string }) {
     try {
       const response = await api.post("/auth", data);

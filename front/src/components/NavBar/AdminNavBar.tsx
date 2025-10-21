@@ -34,22 +34,22 @@ export const AdminNavbar = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="usuario">
+                <a className="nav-link" href="aluno">
                   Alunos
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
+                <a className="nav-link" href="viagem">
                   Viagens
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
+                <a className="nav-link" href="motorista">
                   Motoristas
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
+                <a className="nav-link" href="veiculo">
                   Veículos
                 </a>
               </li>
@@ -106,12 +106,12 @@ export const AdminNavbar = () => {
                   {dropdownOpenAluno && (
                     <ul className="dropdown-menu show w-100">
                       <li>
-                        <a className="dropdown-item" href="">
+                        <a className="dropdown-item" href="aluno">
                           Listar alunos
                         </a>
                       </li>
                       <li>
-                        <a className="dropdown-item" href="usuarios/create.aluno">
+                        <a className="dropdown-item" href="create.usuario">
                           Adicionar aluno
                         </a>
                       </li>
@@ -131,12 +131,12 @@ export const AdminNavbar = () => {
                   {dropdownOpenViagem && (
                     <ul className="dropdown-menu show w-100">
                       <li>
-                        <a className="dropdown-item" href="#">
+                        <a className="dropdown-item" href="viagem">
                           Listar viagens
                         </a>
                       </li>
                       <li>
-                        <a className="dropdown-item" href="#">
+                        <a className="dropdown-item" href="create.viagem">
                           Criar viagem
                         </a>
                       </li>
@@ -156,12 +156,12 @@ export const AdminNavbar = () => {
                   {dropdownOpenMotorista && (
                     <ul className="dropdown-menu show w-100">
                       <li>
-                        <a className="dropdown-item" href="#">
+                        <a className="dropdown-item" href="motorista">
                           Listar motoristas
                         </a>
                       </li>
                       <li>
-                        <a className="dropdown-item" href="#">
+                        <a className="dropdown-item" href="create.usuario">
                           Adicionar motorista
                         </a>
                       </li>
