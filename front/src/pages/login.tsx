@@ -62,7 +62,7 @@ const Login = () => {
     
     if (response.accessToken) {
       localStorage.setItem('token', response.accessToken);
-      router.push('/dashboard');
+      router.push('/home');
     }
 
   };
