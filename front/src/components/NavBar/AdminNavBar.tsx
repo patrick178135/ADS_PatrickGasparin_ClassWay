@@ -2,69 +2,64 @@ import { useState } from "react";
 import { useLogout } from "@/src/hooks/useLogout";
 import { useAuth } from "@/src/context/AuthContext";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import router from "next/router";
 
 export const AdminNavbar = () => {
   const logout = useLogout();
   const { usuario } = useAuth();
 
   const [offcanvasOpen, setOffcanvasOpen] = useState(false);
-  const [dropdownOpenAluno, setDropdownOpenAluno] = useState(false);
+  const [dropdownOpenCadastro, setDropdownOpenCadastro] = useState(false);
   const [dropdownOpenViagem, setDropdownOpenViagem] = useState(false);
   const [dropdownOpenMotorista, setDropdownOpenMotorista] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
+  const irDashboard = () => {
+    router.push("/dashboard"); 
+    setOffcanvasOpen(false)
+  }
+
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary">
+      <nav className="navbar navbar-expand-sm bg-body-tertiary">
         <div className="container-fluid">
-          <li className="nav-item">
-            <button
-              className="btn btn-outline-primary"
-              onClick={() => setOffcanvasOpen(true)}
-            >
-              <i className="bi bi-list"></i>
-            </button>
-          </li>
 
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav me-auto">
-              <li className="nav-item">
-                <a className="nav-link active" href="dashboard">
-                  ClassWay
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="aluno">
-                  Alunos
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="viagem">
-                  Viagens
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="motorista">
-                  Motoristas
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="veiculo">
-                  Veículos
-                </a>
-              </li>
-            </ul>
+          <button
+            className="btn btn-outline-primary me-2"
+            onClick={() => setOffcanvasOpen(true)}
+          >
+            <i className="bi bi-list"></i>
+          </button>
 
+          <a className="navbar-brand" href="home">
+            ClassWay
+          </a>
+
+          <div className="d-none d-sm-block w-100 mt-2">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <button onClick={logout} className="btn btn-outline-danger">
-                  Sair
-                </button>
+                <a className="nav-link" href="aluno">Alunos</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="viagem">Viagens</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="motorista">Motoristas</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="veiculo">Veículos</a>
               </li>
             </ul>
           </div>
+
+          <div className="ms-auto">
+            <button onClick={logout} className="btn btn-outline-danger">
+              Sair
+            </button>
+          </div>
         </div>
       </nav>
+
 
       {offcanvasOpen && (
         <>
@@ -94,25 +89,59 @@ export const AdminNavbar = () => {
               <div className="offcanvas-body">
                 <p>Algumas opções do menu</p>
 
+                <div   className="dropdown mt-3">
+                  <button className="btn btn-outline-secondary w-100 text-start" onClick={irDashboard} >Dashboard</button>
+                </div>
+
                 <div className="dropdown mt-3">
                   <button
-                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start"
+                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start" data-bs-toggle="dropdown"
                     onClick={() =>
-                      setDropdownOpenAluno(!dropdownOpenAluno)
+                      setDropdownOpenCadastro(!dropdownOpenCadastro)
                     }
                   >
-                    Alunos
+                    Cadastro
                   </button>
-                  {dropdownOpenAluno && (
+                  {dropdownOpenCadastro && (
                     <ul className="dropdown-menu show w-100">
                       <li>
                         <a className="dropdown-item" href="aluno">
-                          Listar alunos
+                          Aluno
                         </a>
                       </li>
                       <li>
                         <a className="dropdown-item" href="create.usuario">
-                          Adicionar aluno
+                          Motorista
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="create.usuario">
+                          Usuário Admin
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="create.usuario">
+                          Cidade
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="create.usuario">
+                          Parada
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="create.usuario">
+                          Rota
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="create.usuario">
+                          Veículo
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="create.usuario">
+                          Viagem
                         </a>
                       </li>
                     </ul>

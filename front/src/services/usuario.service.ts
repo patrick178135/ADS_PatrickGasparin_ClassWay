@@ -46,6 +46,18 @@ class UsuarioService {
       throw error;
     }
   }
+
+  async updateUsuario(id: number, data: any) {
+    try {
+      const response = await api.patch(`/usuario/${id}`, data);
+      console.log("Resposta do backend:", response.data);
+
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao atualizar usuário:", error);
+      throw error;
+    }
+  }
 }
 
 export default new UsuarioService();
