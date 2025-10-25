@@ -54,7 +54,7 @@ export class ViagemService {
     async findAll() {
         const viagem = await this.viagemRepository.find({
             order: {
-                ID_viagem: 'desc',
+                ID_viagem: 'asc',
             },
         });
 

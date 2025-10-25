@@ -51,7 +51,7 @@ export class RotaService {
     async findAll() {
         const rota = await this.rotaRepository.find({
             order: {
-                ID_rota: 'desc',
+                ID_rota: 'asc',
             },
         });
 

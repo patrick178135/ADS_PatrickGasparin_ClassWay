@@ -11,7 +11,7 @@ class UsuarioService {
       const response = await api.post("/usuario", data);
       return response; // retorna o objeto completo (status, data etc.)
     } catch (error) {
-      console.error("Erro ao adicionar usuário:", error);
+      console.error("Erro ao adicionar usuário:");
       throw error;
     } finally {
       console.log("Requisição de cadastro finalizada");
@@ -24,7 +24,7 @@ class UsuarioService {
       const response = await api.get("/usuario");
       return response.data;
     } catch (error) {
-      console.error("Erro ao buscar usuários:", error);
+      console.error("Erro ao buscar usuários:");
       throw error;
     }
   }
@@ -42,7 +42,7 @@ class UsuarioService {
 
       return response.data; // retorna { token, user, ... }
     } catch (error) {
-      console.error("Erro ao fazer login:", error);
+      console.error("Erro ao fazer login:");
       throw error;
     }
   }
@@ -55,6 +55,16 @@ class UsuarioService {
       return response.data;
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error);
+      throw error;
+    }
+  }
+
+  async deleteUsuario(id: number) {
+    try {
+      const response = await api.delete(`/usuario/${id}`);
+      return response;
+    } catch (error) {
+      console.error("Erro ao deletar usuário");
       throw error;
     }
   }

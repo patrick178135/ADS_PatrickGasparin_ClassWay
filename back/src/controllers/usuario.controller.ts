@@ -18,7 +18,7 @@ constructor(private readonly usuarioService: UsuarioService) {}
     @Get()
     findAll(@Req() req: Request) {
         // console.log(req[REQUEST_TOKEN_PAYLOAD_KEY].email); dados vai TOKEN
-        return this.usuarioService.findAll();
+        return this.usuarioService.findAllAluno();
     }
 
     @Get(':id')

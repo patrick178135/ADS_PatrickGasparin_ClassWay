@@ -31,7 +31,7 @@ export class CidadeService {
     async findAll() {
         const cidade = await this.cidadeRepository.find({
             order: {
-                ID_cidade: 'desc',
+                ID_cidade: 'asc',
             },
         });
 

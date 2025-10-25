@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/src/context/AuthContext";
 import usuarioService from "../services/usuario.service";
 import { Table, Spinner, Container, Button, Modal, Form } from "react-bootstrap";
+import perfilService from "../services/perfil.service";
+import cidadeService from "../services/cidade.service";
 
 type Usuario = {
   ID_usuario?: number;
@@ -18,17 +20,47 @@ const Aluno = () => {
   const { usuario, loading: loadingAuth, carregarUsuario } = useAuth();
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cidades, setCidades] = useState<{ ID_cidade: number, nome: string }[]>([]);
+  const [perfis, setPerfis] = useState<{ ID_perfil: number, nome: string }[]>([]);
+  const [cidadeMap, setCidadeMap] = useState<Map<number, string>>(new Map());
+  const [perfilMap, setPerfilMap] = useState<Map<number, string>>(new Map());
+  const [refresh, setRefresh] = useState(false);
 
-  const [showModal, setShowModal] = useState(false);
+
+  const [showModalVer, setShowModalVer] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState<Usuario | null>(null);
 
   useEffect(() => {
     carregarUsuario();
-  }, []);
-
-  useEffect(() => {
     fetchUsuarios();
-  }, []);
+    fetchCidades();
+    fetchPerfis();
+  }, [refresh]);
+
+  const fetchCidades = async () => {
+    try {
+      const dados = await cidadeService.getCidades();
+      setCidades(dados);
+      const map = new Map<number, string>();
+      dados.forEach((cidade: { ID_cidade: number, nome: string }) => map.set(cidade.ID_cidade, cidade.nome));
+      setCidadeMap(map);
+    } catch (error) {
+      console.error("Erro ao buscar cidades:", error);
+    }
+  };
+
+  const fetchPerfis = async () => {
+    try {
+      const dados = await perfilService.getPerfis();
+      setPerfis(dados);
+      const map = new Map<number, string>();
+      dados.forEach((perfil: { ID_perfil: number, nome: string }) => map.set(perfil.ID_perfil, perfil.nome));
+      setPerfilMap(map);
+    } catch (error) {
+      console.error("Erro ao buscar perfis:", error);
+    }
+  };
 
   const fetchUsuarios = async () => {
     try {
@@ -42,15 +74,26 @@ const Aluno = () => {
     }
   };
 
-  // Abrir modal
-  const handleEditar = (user: Usuario) => {
+  const handleVer = (user: Usuario) => {
     setUsuarioSelecionado(user);
-    setShowModal(true);
+    setShowModalVer(true);
   };
 
-  // Fechar modal
-  const handleFechar = () => {
-    setShowModal(false);
+  const handleFecharVer = () => {
+    setShowModalVer(false);
+    setUsuarioSelecionado(null);
+  };
+
+
+  // Abrir modal Edit
+  const handleEditar = (user: Usuario) => {
+    setUsuarioSelecionado(user);
+    setShowModalEdit(true);
+  };
+
+  // Fechar modal Edit
+  const handleFecharEdit = () => {
+    setShowModalEdit(false);
     setUsuarioSelecionado(null);
   };
 
@@ -60,7 +103,7 @@ const Aluno = () => {
       console.log("chegou aqui:");
       return;
     }
-  
+
     const body = {
       nome: usuarioSelecionado.nome,
       CPF: usuarioSelecionado.CPF,
@@ -70,33 +113,49 @@ const Aluno = () => {
       perfil_usuario: usuarioSelecionado.perfil_usuario,
       cidade: usuarioSelecionado.cidade,
     };
-  
+
     try {
       console.log("Enviando body:", body);
       await usuarioService.updateUsuario(usuarioSelecionado.ID_usuario, body);
-      handleFechar();
+      handleFecharEdit();
       fetchUsuarios();
     } catch (error) {
       console.error("Erro ao atualizar:", error);
     }
   };
+
+  const excluirUsuario = async (usuarioParaExcluir: Usuario) => {
+    if (!usuarioParaExcluir.ID_usuario) {
+      console.error("ID do usuário não encontrado para exclusão.");
+      return;
+    }
   
+    try {
+      const resultado = await usuarioService.deleteUsuario(usuarioParaExcluir.ID_usuario);
+      setRefresh(!refresh)
+
+    } catch (error) {
+      console.error("Erro ao excluir usuário:", error);
+    }
+  };
+
 
   if (loadingAuth) return <Spinner animation="border" />;
   if (!usuario) return <p>Usuário não logado</p>;
   if (loading) return <Spinner animation="border" />;
 
   return (
-    <Container className="mt-5">
-      <div className="d-flex justify-content-start mb-3">
-        <Button href="create.usuario">Adicionar Aluno</Button>
+    <Container className="mt-5 rounded-4 shadow">
+      <div className="d-flex justify-content-end mb-3">
+        <Button href="create.usuario" className="mt-5 shadow">Adicionar Aluno</Button>
       </div>
 
-      <h1 className="mb-4">Lista de Usuários</h1>
+      <h1 className="mb-4">Lista de Alunos</h1>
 
       <Table striped bordered hover responsive>
         <thead>
           <tr>
+            <th>id</th>
             <th>Nome</th>
             <th>Email</th>
             <th>CPF</th>
@@ -116,19 +175,39 @@ const Aluno = () => {
           ) : (
             usuarios.map((u, index) => (
               <tr key={index}>
+                <td>{u.ID_usuario}</td>
                 <td>{u.nome}</td>
                 <td>{u.email}</td>
                 <td>{u.CPF}</td>
                 <td>{u.ativo ? "Sim" : "Não"}</td>
-                <td>{u.perfil_usuario}</td>
-                <td>{u.cidade}</td>
+                <td>{perfilMap.get(u.perfil_usuario) || u.perfil_usuario}</td>
+                <td>{cidadeMap.get(u.cidade) || u.cidade}</td>
                 <td>
                   <Button
+                    className="m-1 shadow"
                     variant="warning"
                     size="sm"
                     onClick={() => handleEditar(u)}
                   >
-                    Editar
+                    <i className="bi bi-pencil me-1"></i> Editar
+                  </Button>
+
+                  <Button
+                    className="m-1 shadow"
+                    variant="primary"
+                    size="sm"
+                    onClick={() => handleVer(u)}
+                  >
+                    <i className="bi bi-eye me-1"></i> Ver
+                  </Button>
+
+                  <Button
+                    className="m-1 shadow"
+                    variant="danger"
+                    size="sm"
+                    onClick={() => excluirUsuario(u)}
+                  >
+                    <i className="bi bi-trash me-1"></i> Excluir
                   </Button>
                 </td>
               </tr>
@@ -137,9 +216,79 @@ const Aluno = () => {
         </tbody>
       </Table>
 
-      <Modal show={showModal} onHide={handleFechar}>
+      <Modal show={showModalVer} onHide={handleFecharVer}>
         <Modal.Header closeButton>
-          <Modal.Title>Editar Usuário</Modal.Title>
+          <Modal.Title>Aluno</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {usuarioSelecionado && (
+            <Form>
+              <Form.Group className="mb-2">
+                <Form.Label>Nome</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={usuarioSelecionado.nome}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-2">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  value={usuarioSelecionado.email}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-2">
+                <Form.Label>CPF</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={usuarioSelecionado.CPF}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-2">
+                <Form.Label>Senha</Form.Label>
+                <Form.Control
+                  type="password"
+                  value={usuarioSelecionado.senhaHash}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-2">
+                <Form.Check
+                  type="checkbox"
+                  label="Ativo"
+                  checked={usuarioSelecionado.ativo}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-2">
+                <Form.Label>Perfil</Form.Label>
+                <Form.Control
+                  value={perfilMap.get(usuarioSelecionado.perfil_usuario) ?? "Não Encontrado"}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-2">
+                <Form.Label>Cidade</Form.Label>
+                <Form.Control
+                  value={cidadeMap.get(usuarioSelecionado.cidade) ?? "Não Encontrado"}
+                />
+              </Form.Group>
+            </Form>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleFecharVer}>
+            Sair
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showModalEdit} onHide={handleFecharEdit}>
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Aluno</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {usuarioSelecionado && (
@@ -189,7 +338,7 @@ const Aluno = () => {
               <Form.Group className="mb-2">
                 <Form.Label>Senha</Form.Label>
                 <Form.Control
-                  type="string"
+                  type="password"
                   value={usuarioSelecionado.senhaHash}
                   onChange={(e) =>
                     setUsuarioSelecionado({
@@ -216,8 +365,7 @@ const Aluno = () => {
 
               <Form.Group className="mb-2">
                 <Form.Label>Perfil</Form.Label>
-                <Form.Control
-                  type="number"
+                <Form.Select
                   value={usuarioSelecionado.perfil_usuario}
                   onChange={(e) =>
                     setUsuarioSelecionado({
@@ -225,13 +373,19 @@ const Aluno = () => {
                       perfil_usuario: Number(e.target.value),
                     })
                   }
-                />
+                >
+                  <option value={"0"}>Selecione o perfil</option>
+                  {perfis.map((perfil) => (
+                    <option key={perfil.ID_perfil} value={perfil.ID_perfil.toString()}>
+                      {perfil.nome}
+                    </option>
+                  ))}
+                </Form.Select>
               </Form.Group>
 
               <Form.Group className="mb-2">
                 <Form.Label>Cidade</Form.Label>
-                <Form.Control
-                  type="number"
+                <Form.Select
                   value={usuarioSelecionado.cidade}
                   onChange={(e) =>
                     setUsuarioSelecionado({
@@ -239,13 +393,20 @@ const Aluno = () => {
                       cidade: Number(e.target.value),
                     })
                   }
-                />
+                >
+                  <option value={"0"}>Selecione a cidade</option>
+                  {cidades.map((cidade) => (
+                    <option key={cidade.ID_cidade} value={cidade.ID_cidade.toString()}>
+                      {cidade.nome}
+                    </option>
+                  ))}
+                </Form.Select>
               </Form.Group>
             </Form>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleFechar}>
+          <Button variant="secondary" onClick={handleFecharEdit}>
             Cancelar
           </Button>
           <Button variant="primary" onClick={handleSalvar}>
