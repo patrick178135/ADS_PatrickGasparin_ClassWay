@@ -1,8 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLogout } from "@/src/hooks/useLogout";
 import { useAuth } from "@/src/context/AuthContext";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import router from "next/router";
+import { Leckerli_One, Libre_Caslon_Text } from "next/font/google";
+import perfilService from "@/src/services/perfil.service";
+
+
+const leckerliOne = Leckerli_One({
+  subsets: ['latin'],
+  weight: '400',
+});
+
+const libreCaslon = Libre_Caslon_Text({
+  subsets: ['latin'],
+  weight: '400',
+});
 
 export const AdminNavbar = () => {
   const logout = useLogout();
@@ -13,58 +26,71 @@ export const AdminNavbar = () => {
   const [dropdownOpenViagem, setDropdownOpenViagem] = useState(false);
   const [dropdownOpenMotorista, setDropdownOpenMotorista] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [perfis, setPerfis] = useState<{ ID_perfil: number, nome: string }[]>([]);
+  const [perfilMap, setPerfilMap] = useState<Map<number, string>>(new Map());
+  
+  useEffect(() => {
+    fetchPerfis();
+  }, []);
+
+  const fetchPerfis = async () => {
+    try {
+      const dados = await perfilService.getPerfis();
+      setPerfis(dados);
+      const map = new Map<number, string>();
+      dados.forEach((perfil: { ID_perfil: number, nome: string }) => map.set(perfil.ID_perfil, perfil.nome));
+      setPerfilMap(map);
+    } catch (error) {
+      console.error("Erro ao buscar perfis:", error);
+    }
+  };
 
   const irDashboard = () => {
-    router.push("/dashboard"); 
+    router.push("/dashboard");
     setOffcanvasOpen(false)
   }
 
   return (
     <>
-      <nav className="navbar navbar-expand-sm bg-body-tertiary">
+      <nav className="navbar navbar-expand-sm" style={{ backgroundColor: 'rgb(102, 17, 17)' }}>
         <div className="container-fluid">
 
-          <button
-            className="btn btn-outline-primary me-2"
-            onClick={() => setOffcanvasOpen(true)}
-          >
-            <i className="bi bi-list"></i>
-          </button>
-
-          <a className="navbar-brand" href="home">
+          <a className={`navbar-brand text-light ${leckerliOne.className}`} href="home">
             ClassWay
           </a>
 
           <div className="d-none d-sm-block w-100 mt-2">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link" href="aluno">Alunos</a>
+                <a className={`nav-link text-light ${libreCaslon.className}`} href="aluno">Alunos</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="viagem">Viagens</a>
+                <a className={`nav-link text-light ${libreCaslon.className}`} href="viagem">Viagens</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="motorista">Motoristas</a>
+                <a className={`nav-link text-light ${libreCaslon.className}`} href="motorista">Motoristas</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="veiculo">Veículos</a>
+                <a className={`nav-link text-light ${libreCaslon.className}`} href="veiculo">Veículos</a>
               </li>
             </ul>
           </div>
 
           <div className="ms-auto">
-            <button onClick={logout} className="btn btn-outline-danger">
-              Sair
+            <button
+              className="btn btn-outline-light me-2"
+              onClick={() => setOffcanvasOpen(true)}
+            >
+              <i className="bi bi-list"></i>
             </button>
           </div>
         </div>
       </nav>
 
-
       {offcanvasOpen && (
         <>
           <div
-            className="offcanvas offcanvas-start show d-flex flex-column justify-content-between"
+            className={`offcanvas offcanvas-start show d-flex flex-column justify-content-between ${libreCaslon.className}`}
             style={{
               visibility: "visible",
               position: "fixed",
@@ -72,13 +98,13 @@ export const AdminNavbar = () => {
               left: 0,
               width: "300px",
               height: "100vh",
-              backgroundColor: "white",
               zIndex: 1050,
+              backgroundColor: 'rgb(102, 17, 17)' 
             }}
           >
             <div>
               <div className="offcanvas-header">
-                <h5 className="offcanvas-title">Menu</h5>
+                <h5 className="offcanvas-title text-light" >Menu</h5>
                 <button
                   type="button"
                   className="btn-close"
@@ -87,15 +113,14 @@ export const AdminNavbar = () => {
               </div>
 
               <div className="offcanvas-body">
-                <p>Algumas opções do menu</p>
 
-                <div   className="dropdown mt-3">
-                  <button className="btn btn-outline-secondary w-100 text-start" onClick={irDashboard} >Dashboard</button>
+                <div className="dropdown mt-3">
+                  <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irDashboard} >Dashboard</button>
                 </div>
 
                 <div className="dropdown mt-3">
                   <button
-                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start" data-bs-toggle="dropdown"
+                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start text-light" data-bs-toggle="dropdown"
                     onClick={() =>
                       setDropdownOpenCadastro(!dropdownOpenCadastro)
                     }
@@ -144,13 +169,23 @@ export const AdminNavbar = () => {
                           Viagem
                         </a>
                       </li>
+                      <li>
+                        <a className="dropdown-item" href="create.cidade">
+                          Cidade
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="create.perfil">
+                          Perfil
+                        </a>
+                      </li>
                     </ul>
                   )}
                 </div>
 
                 <div className="dropdown mt-3">
                   <button
-                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start"
+                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start text-light"
                     onClick={() =>
                       setDropdownOpenViagem(!dropdownOpenViagem)
                     }
@@ -175,7 +210,7 @@ export const AdminNavbar = () => {
 
                 <div className="dropdown mt-3">
                   <button
-                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start"
+                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start text-light"
                     onClick={() =>
                       setDropdownOpenMotorista(!dropdownOpenMotorista)
                     }
@@ -212,9 +247,9 @@ export const AdminNavbar = () => {
               <div className="d-flex align-items-center">
                 <i className="bi bi-person-circle fs-3 me-2 text-secondary"></i>
                 <div>
-                  <strong>{usuario?.email ?? "Usuário"}</strong>
+                  <strong>{usuario?.nome ?? "Usuário"}</strong>
                   <p className="mb-0 text-muted" style={{ fontSize: "0.85rem" }}>
-                    Perfil {usuario?.perfil ?? "-"}
+                    Perfil {perfilMap.get(usuario?.perfil ?? 0)}
                   </p>
                 </div>
               </div>

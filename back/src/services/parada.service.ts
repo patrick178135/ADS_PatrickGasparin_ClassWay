@@ -32,7 +32,7 @@ export class ParadaService {
     async findAll() {
         const parada = await this.paradaRepository.find({
             order: {
-                ID_parada: 'desc',
+                ID_parada: 'asc',
             },
         });
 

@@ -36,7 +36,7 @@ export class VeiculoService {
     async findAll() {
         const veiculo = await this.veiculoRepository.find({
             order: {
-                ID_veiculo: 'desc',
+                ID_veiculo: 'asc',
             },
         });
 

@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/src/context/AuthContext";
+import { Libre_Caslon_Text } from "next/font/google";
+
+const libreCaslon = Libre_Caslon_Text({
+  subsets: ['latin'],
+  weight: '400',
+});
 
 const Home = () => {
   const { usuario, loading, carregarUsuario } = useAuth();
@@ -34,12 +40,16 @@ const Home = () => {
   });
 
   return (
-    <div className="container text-center mt-5">
-      <h2 className="mb-4">Bem-vindo, {usuario.email}!</h2>
-      <p className="text-secondary mb-2">{dataFormatada}</p>
-      <h1 className="display-1 fw-bold text-primary">{horaFormatada}</h1>
-      <button type="button" className="btn btn-outline-primary" >Viagens</button>    
+    <body className={`${libreCaslon.className} bg-`} > 
+
+
+      <div className="container text-center mt-5" >
+        <h2 className="mb-5 text-dark">Bem-vindo, {usuario.nome}!</h2>
+        <p className="text-dark mb-5 ">{dataFormatada}</p>
+        <h1 className="display-1 fw-bold text-primary m-5">{horaFormatada}</h1>
+        <button type="button" className="btn btn-outline-dark" >Viagens</button>
       </div>
+    </body>
   );
 };
 
