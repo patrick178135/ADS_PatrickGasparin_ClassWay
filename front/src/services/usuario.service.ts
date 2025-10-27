@@ -18,13 +18,42 @@ class UsuarioService {
     }
   }
 
-
   async getUsuarios() {
     try {
       const response = await api.get("/usuario");
       return response.data;
     } catch (error) {
-      console.error("Erro ao buscar usuários:");
+      console.error("Erro ao buscar Usuário:");
+      throw error;
+    }
+  }
+
+  async getAdmins() {
+    try {
+      const response = await api.get("/usuario/admin");
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao buscar Alunos:");
+      throw error;
+    }
+  }
+
+  async getMotristas() {
+    try {
+      const response = await api.get("/usuario/motorista");
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao buscar Alunos:");
+      throw error;
+    }
+  }
+
+  async getAlunos() {
+    try {
+      const response = await api.get("/usuario/aluno");
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao buscar Alunos:");
       throw error;
     }
   }
@@ -54,7 +83,7 @@ class UsuarioService {
 
       return response.data;
     } catch (error) {
-      console.error("Erro ao atualizar usuário:", error);
+      console.error("Erro ao atualizar usuário:");
       throw error;
     }
   }

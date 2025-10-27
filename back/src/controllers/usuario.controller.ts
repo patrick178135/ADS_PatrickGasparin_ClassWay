@@ -15,9 +15,23 @@ constructor(private readonly usuarioService: UsuarioService) {}
         return this.usuarioService.create(createUsuarioDto);
     }
 
-    @Get()
+    @Get('')
     findAll(@Req() req: Request) {
-        // console.log(req[REQUEST_TOKEN_PAYLOAD_KEY].email); dados vai TOKEN
+        return this.usuarioService.findAll();
+    }
+
+    @Get('admin')
+    findAllAdmin(@Req() req: Request) {
+        return this.usuarioService.findAllAdmin();
+    }
+
+    @Get('motorista')
+    findAllMotorista(@Req() req: Request) {
+        return this.usuarioService.findAllMotorista();
+    }
+    
+    @Get('aluno')
+    findAllAluno(@Req() req: Request) {
         return this.usuarioService.findAllAluno();
     }
 

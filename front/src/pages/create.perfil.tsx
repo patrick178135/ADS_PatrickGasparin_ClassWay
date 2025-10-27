@@ -3,12 +3,14 @@ import { Button, Form, FormControl, FormGroup, FormLabel } from "react-bootstrap
 import { Alert, AlertTitle } from "@mui/material";
 import perfilService from "../services/perfil.service";
 import router from "next/router";
+import { useAuth } from "../context/AuthContext";
 
 type Perfil = {
   nome: string;
 };
 
 const Perfil = () => {
+  const { usuario, loading, carregarUsuario } = useAuth();
   const [refresh, setRefresh] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [tipoMensagem, setTipoMensagem] = useState<"success" | "error" | "warning" | "info" | null>(null);
@@ -16,6 +18,11 @@ const Perfil = () => {
   const [currentPerfil, setCurrentPerfil] = useState<Perfil>({
     nome: "",
   });
+
+  if (!usuario) {
+
+    return <div> <a>Usuário não Logado</a> <a href="/login">Clique aqui para fazer Login</a></div>
+  }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -42,7 +49,7 @@ const Perfil = () => {
         router.push("/aluno");
       }
     } catch (error) {
-      console.error("Erro ao adicionar perfil:", error);
+      console.error("Erro ao adicionar perfil:");
       setMensagem("Erro ao cadastrar perfil. Tente novamente.");
       setTipoMensagem("error");
     } finally {
