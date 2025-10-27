@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 interface UsuarioToken {
   sub: number;
+  nome: string;
   email: string;
   perfil: number;
 }

@@ -31,7 +31,7 @@ export class PerfilService {
   async findAll() {
     const perfil = await this.perfilRepository.find({
       order: {
-        ID_perfil: 'desc',
+        ID_perfil: 'asc',
       },
     });
 
