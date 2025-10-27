@@ -4,6 +4,7 @@ import { Alert, AlertTitle } from "@mui/material";
 import perfilService from "../services/perfil.service";
 import router from "next/router";
 import cidadeService from "../services/cidade.service";
+import { useAuth } from "../context/AuthContext";
 
 type Cidade = {
   nome: string;
@@ -11,9 +12,17 @@ type Cidade = {
 };
 
 const Cidade = () => {
+
+
+  const { usuario, loading, carregarUsuario } = useAuth();
   const [refresh, setRefresh] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [tipoMensagem, setTipoMensagem] = useState<"success" | "error" | "warning" | "info" | null>(null);
+
+  if (!usuario) {
+
+    return <div> <a>Usuário não Logado</a> <a href="/login">Clique aqui para fazer Login</a></div>
+  }
 
   const [currentCidade, setCurrentCidade] = useState<Cidade>({
     nome: "",

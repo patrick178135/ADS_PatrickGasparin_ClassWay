@@ -5,6 +5,7 @@ import usuarioService from "../services/usuario.service";
 import cidadeService from "../services/cidade.service";
 import perfilService from "../services/perfil.service";
 import router from "next/router";
+import { useAuth } from "../context/AuthContext";
 
 type Usuario = {
   nome: string;
@@ -17,12 +18,12 @@ type Usuario = {
 };
 
 const Usuarios = () => {
+  const { usuario, loading, carregarUsuario } = useAuth();
   const [refresh, setRefresh] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [tipoMensagem, setTipoMensagem] = useState<"success" | "error" | "warning" | "info" | null>(null);
   const [perfis, setPerfis] = useState<{ ID_perfil: number, nome: string }[]>([]);
   const [cidades, setCidades] = useState<{ ID_cidade: number, nome: string }[]>([]);
-
 
   const [currentUsuario, setCurrentUsuario] = useState<Usuario>({
     nome: "",
@@ -91,7 +92,7 @@ const Usuarios = () => {
         irAluno();
       }
     } catch (error) {
-      console.error("Erro ao adicionar usuário:", error);
+      console.error("Erro ao adicionar usuário:");
       setMensagem("Erro ao cadastrar usuário. Tente novamente.");
       setTipoMensagem("error");
     } finally {
@@ -121,6 +122,11 @@ const Usuarios = () => {
     router.push("/aluno");
   }
   
+    
+  if (!usuario) {
+
+    return <div> <a>Usuário não Logado</a> <a href="/login">Clique aqui para fazer Login</a></div>
+  }
   return (
     <div className="container mt-5">
       <div className="d-flex justify-content-start">

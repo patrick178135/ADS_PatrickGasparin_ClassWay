@@ -68,7 +68,7 @@ const Login = () => {
         router.push('/home');
       }
     } catch (err: any) {
-      console.error("Erro ao fazer login:", err);
+      console.error("Erro ao fazer login:");
       setError("Credenciais inválidas");
       setSuccess(false);
     }
