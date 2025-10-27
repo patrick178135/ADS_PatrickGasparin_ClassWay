@@ -12,9 +12,9 @@ export const NavbarSelector = () => {
     case 1:
       return <AdminNavbar />;
     case 2:
-      return <AlunoNavbar />;
+      return <MotoristaNavbar/>;
     case 3:
-      return <MotoristaNavbar />;
+      return <AlunoNavbar/>;
     default:
       return null;
   }

@@ -42,11 +42,50 @@ export class UsuarioService {
     async findAll() {
         const usuario = await this.usuarioRepository.find({
             order: {
-                ID_usuario: 'desc',
+                ID_usuario: 'asc',
             },
         });
 
         return usuario;
+    }
+
+    async findAllAdmin() {
+        const usuarioAluno = await this.usuarioRepository.find({
+            where: {
+                perfil_usuario: 1,
+            },
+            order: {
+                ID_usuario: 'asc',
+            },
+        });
+
+        return usuarioAluno;
+    }
+
+    async findAllMotorista() {
+        const usuarioAluno = await this.usuarioRepository.find({
+            where: {
+                perfil_usuario: 2,
+            },
+            order: {
+                ID_usuario: 'asc',
+            },
+        });
+
+        return usuarioAluno;
+    }
+
+    async findAllAluno() {
+        const usuarioAluno = await this.usuarioRepository.find({
+            where: {
+                perfil_usuario: 3,
+            },
+            order: {
+                ID_usuario: 'asc',
+            },
+        });
+
+        return usuarioAluno;
     }
 
     async findOne(ID_usuario: number) {

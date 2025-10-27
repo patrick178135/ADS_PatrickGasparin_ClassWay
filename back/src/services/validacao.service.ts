@@ -36,7 +36,7 @@ export class ValidacaoService {
     async findAll() {
         const validacao = await this.validacaoRepository.find({
             order: {
-                ID_validacao: 'desc',
+                ID_validacao: 'asc',
             },
         });
 
