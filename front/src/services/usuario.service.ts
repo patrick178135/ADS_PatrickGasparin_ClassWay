@@ -17,6 +17,15 @@ class UsuarioService {
       console.log("Requisição de cadastro finalizada");
     }
   }
+  async getUsuario(id: number) {
+    try {
+      const response = await api.get(`/usuario/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao buscar Usuário:");
+      throw error;
+    }
+  }
 
   async getUsuarios() {
     try {
