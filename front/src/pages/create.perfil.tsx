@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Form, FormControl, FormGroup, FormLabel } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, FormControl, FormGroup, FormLabel, Row, Toast, ToastContainer } from "react-bootstrap";
 import { Alert, AlertTitle } from "@mui/material";
 import perfilService from "../services/perfil.service";
 import router from "next/router";
@@ -60,50 +60,92 @@ const Perfil = () => {
     }
   };
 
+  const handleCloseToast = () => {
+    setMensagem(null);
+    setTipoMensagem(null);
+  };
+
+
   return (
-    <div className="container mt-5">
-      <div className="d-flex justify-content-start">
-        <Button href="#">Voltar</Button>
-      </div>
-
-      <div className="d-flex justify-content-center">
-        <h2>Cadastrar Perfil</h2>
-      </div>
-
-      <Form>
-        <FormGroup className="p-2">
-          <FormLabel className="text-white">Nome:</FormLabel>
-          <FormControl
-            id="nomePerfil"
-            type="text"
-            name="nome"
-            value={currentPerfil.nome}
-            placeholder="Digite o nome do Perfil"
-            onChange={handleChange}
-          />
-        </FormGroup>
-
-        <div className="d-flex justify-content-end p-2">
-          <Button onClick={addPerfil} id="salvarCidade">
-            Salvar
-          </Button>
-        </div>
-      </Form>
-
+    <>
+    <ToastContainer
+      className="p-3"
+      position="top-end"
+      style={{ zIndex: 15000 }}
+    >
       {mensagem && tipoMensagem && (
-        <div className="mt-3">
-          <Alert severity={tipoMensagem}>
-            <AlertTitle>
+        <Toast
+          onClose={handleCloseToast}
+          show={!!mensagem}
+          delay={5000}
+          autohide
+          bg="dark"
+        >
+          <Toast.Header closeButton>
+            <strong className="me-auto">
               {tipoMensagem === "success" && "Sucesso"}
               {tipoMensagem === "info" && "Informação"}
               {tipoMensagem === "warning" && "Atenção"}
               {tipoMensagem === "error" && "Erro"}
-            </AlertTitle>
+            </strong>
+          </Toast.Header>
+          <Toast.Body className='text-white'>
             {mensagem}
-          </Alert>
-        </div>
+          </Toast.Body>
+        </Toast>
       )}
-    </div>
+    </ToastContainer>
+
+    <Container className="mt-5">
+
+      <div className="d-flex justify-content-start mb-4">
+        <Button href="perfil">Voltar</Button>
+      </div>
+
+      <div className="d-flex justify-content-end">
+        {mensagem && tipoMensagem && (
+          <div className="mt-3">
+
+          </div>
+        )}
+      </div>
+
+      <Card className="shadow-lg p-3" style={{ maxWidth: '900px', margin: '0 auto' }}>
+        <Card.Header className="text-center">
+          <h2 className="mb-0">Cadastrar Perfil</h2>
+        </Card.Header>
+
+        <Card.Body>
+          <Form>
+
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Nome:</Form.Label>
+                  <Form.Control
+                    id="nomePerfil"
+                    type="text"
+                    name="nome"
+                    value={currentPerfil.nome}
+                    placeholder="Digite o nome do Perfil"
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+          </Form>
+        </Card.Body>
+
+        <Card.Footer className="text-end bg-white border-0">
+          <Button onClick={addPerfil} id="salvarPerfil" className="shadow">
+            Salvar
+          </Button>
+        </Card.Footer>
+      </Card>
+
+    </Container>
+  </>
   );
 };
 
