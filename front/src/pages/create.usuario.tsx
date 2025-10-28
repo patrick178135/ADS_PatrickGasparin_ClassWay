@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Form, FormControl, FormGroup, FormLabel } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, FormControl, FormGroup, FormLabel, Row, Toast, ToastContainer } from "react-bootstrap";
 import { Alert, AlertTitle } from "@mui/material";
 import usuarioService from "../services/usuario.service";
 import cidadeService from "../services/cidade.service";
@@ -65,7 +65,7 @@ const Usuarios = () => {
       setTipoMensagem("warning");
       return;
     }
-    
+
     if (!/^\d{11}$/.test(currentUsuario.CPF)) {
       setMensagem("O CPF deve conter exatamente 11 dígitos numéricos.");
       setTipoMensagem("warning");
@@ -121,143 +121,200 @@ const Usuarios = () => {
   const irAluno = () => {
     router.push("/aluno");
   }
-  
-    
+
+
+  const handleCloseToast = () => {
+    setMensagem(null);
+    setTipoMensagem(null);
+  };
+
+
+
   if (!usuario) {
 
     return <div> <a>Usuário não Logado</a> <a href="/login">Clique aqui para fazer Login</a></div>
   }
+
   return (
-    <div className="container mt-5">
-      <div className="d-flex justify-content-start">
-        <Button href="aluno">Voltar</Button>
-      </div>
-      <div className="d-flex justify-content-end">
+    <>
+      <ToastContainer
+        className="p-3"
+        position="top-end"
+        style={{ zIndex: 15000 }}
+      >
         {mensagem && tipoMensagem && (
-          <div className="mt-3">
-            <Alert severity={tipoMensagem}>
-              <AlertTitle>
+          <Toast
+            onClose={handleCloseToast}
+            show={!!mensagem}
+            delay={5000}
+            autohide
+            bg="dark"
+          >
+            <Toast.Header closeButton>
+              <strong className="me-auto">
                 {tipoMensagem === "success" && "Sucesso"}
                 {tipoMensagem === "info" && "Informação"}
                 {tipoMensagem === "warning" && "Atenção"}
                 {tipoMensagem === "error" && "Erro"}
-              </AlertTitle>
+              </strong>
+            </Toast.Header>
+            <Toast.Body className='text-white'>
               {mensagem}
-            </Alert>
-          </div>
+            </Toast.Body>
+          </Toast>
         )}
-      </div>
+      </ToastContainer>
 
-      <div className="d-flex justify-content-center">
-        <h2>Cadastrar Usuário</h2>
-      </div>
+      <Container className="mt-5">
 
-      <Form>
-        <FormGroup className="p-2">
-          <FormLabel className="text-white">Nome:</FormLabel>
-          <FormControl
-            id="nomeUsuario"
-            type="text"
-            name="nome"
-            value={currentUsuario.nome}
-            placeholder="Digite o nome do Usuário"
-            onChange={handleChange}
-          />
-        </FormGroup>
-
-        <FormGroup className="p-2">
-          <FormLabel className="text-white">Email:</FormLabel>
-          <FormControl
-            id="emailUsuario"
-            type="email"
-            name="email"
-            value={currentUsuario.email}
-            placeholder="Digite o email do Usuário"
-            onChange={handleChange}
-          />
-        </FormGroup>
-
-        <FormGroup className="p-2">
-          <FormLabel className="text-white">CPF:</FormLabel>
-          <FormControl
-            id="CPFUsuario"
-            type="text"
-            name="CPF"
-            value={currentUsuario.CPF}
-            placeholder="Digite o CPF do Usuário"
-            onChange={handleChange}
-            maxLength={11}
-          />
-        </FormGroup>
-
-        <FormGroup className="p-2">
-          <FormLabel className="text-white">Senha:</FormLabel>
-          <FormControl
-            id="senhaUsuario"
-            type="password"
-            name="senha"
-            value={currentUsuario.senha}
-            placeholder="Digite uma senha para o Usuário"
-            onChange={handleChange}
-          />
-        </FormGroup>
-
-        <FormGroup className="p-2">
-          <FormLabel className="text-white">Ativo:</FormLabel>
-          <Form.Check
-            type="checkbox"
-            id="ativoUsuario"
-            name="ativo"
-            checked={currentUsuario.ativo}
-            label="Usuário ativo"
-            onChange={(e) =>
-              setCurrentUsuario({ ...currentUsuario, ativo: e.target.checked })
-            }
-          />
-        </FormGroup>
-
-        <FormGroup className="p-2">
-          <FormLabel className="text-white">Perfil:</FormLabel>
-          <Form.Select
-            name="perfil_usuario"
-            value={currentUsuario.perfil_usuario}
-            onChange={handleChange}
-          >
-            <option value={0}>Selecione o perfil</option>
-            {perfis.map((perfil) => (
-              <option key={perfil.ID_perfil} value={perfil.ID_perfil}>
-                {perfil.nome}
-              </option>
-            ))}
-          </Form.Select>
-        </FormGroup>
-
-        <FormGroup className="p-2">
-          <FormLabel className="text-white">Cidade:</FormLabel>
-          <Form.Select
-            name="cidade"
-            value={currentUsuario.cidade}
-            onChange={handleChange}
-          >
-            <option value={0}>Selecione a cidade</option>
-            {cidades.map((cidade) => (
-              <option key={cidade.ID_cidade} value={cidade.ID_cidade}>
-                {cidade.nome}
-              </option>
-            ))}
-          </Form.Select>
-        </FormGroup>
-
-        <div className="d-flex justify-content-end p-2">
-          <Button onClick={addUsuario} id="salvarAluno">
-            Salvar
-          </Button>
+        <div className="d-flex justify-content-start mb-4">
+          <Button href="aluno">Voltar</Button>
         </div>
-      </Form>
 
+        <div className="d-flex justify-content-end">
+          {mensagem && tipoMensagem && (
+            <div className="mt-3">
 
-    </div>
+            </div>
+          )}
+        </div>
+
+        <Card className="shadow-lg p-3" style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <Card.Header className="text-center">
+            <h2 className="mb-0">Cadastrar Usuário</h2>
+          </Card.Header>
+
+          <Card.Body>
+            <Form>
+
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Nome:</Form.Label>
+                    <Form.Control
+                      id="nomeUsuario"
+                      type="text"
+                      name="nome"
+                      value={currentUsuario.nome}
+                      placeholder="Digite o nome do Usuário"
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Email:</Form.Label>
+                    <Form.Control
+                      id="emailUsuario"
+                      type="email"
+                      name="email"
+                      value={currentUsuario.email}
+                      placeholder="Digite o email do Usuário"
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>CPF:</Form.Label>
+                    <Form.Control
+                      id="CPFUsuario"
+                      type="text"
+                      name="CPF"
+                      value={currentUsuario.CPF}
+                      placeholder="Digite o CPF do Usuário"
+                      onChange={handleChange}
+                      maxLength={11}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Senha:</Form.Label>
+                    <Form.Control
+                      id="senhaUsuario"
+                      type="password"
+                      name="senha"
+                      value={currentUsuario.senha}
+                      placeholder="Digite uma senha para o Usuário"
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Perfil:</Form.Label>
+                    <Form.Select
+                      name="perfil_usuario"
+                      value={currentUsuario.perfil_usuario}
+                      onChange={handleChange}
+                    >
+                      <option value={0}>Selecione o perfil</option>
+                      {perfis.map((perfil) => (
+                        <option key={perfil.ID_perfil} value={perfil.ID_perfil}>
+                          {perfil.nome}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Cidade:</Form.Label>
+                    <Form.Select
+                      name="cidade"
+                      value={currentUsuario.cidade}
+                      onChange={handleChange}
+                    >
+                      <option value={0}>Selecione a cidade</option>
+                      {cidades.map((cidade) => (
+                        <option key={cidade.ID_cidade} value={cidade.ID_cidade}>
+                          {cidade.nome}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col xs={12}>
+                  <Form.Group className="mb-3">
+                    <Form.Check
+                      type="checkbox"
+                      id="ativoUsuario"
+                      name="ativo"
+                      checked={currentUsuario.ativo}
+                      label="Usuário ativo"
+                      onChange={(e) =>
+                        setCurrentUsuario({ ...currentUsuario, ativo: e.target.checked })
+                      }
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+            </Form>
+          </Card.Body>
+
+          <Card.Footer className="text-end bg-white border-0">
+            <Button onClick={addUsuario} id="salvarAluno" className="shadow">
+              Salvar
+            </Button>
+          </Card.Footer>
+        </Card>
+
+      </Container>
+    </>
+
   );
+
 };
 
 export default Usuarios;

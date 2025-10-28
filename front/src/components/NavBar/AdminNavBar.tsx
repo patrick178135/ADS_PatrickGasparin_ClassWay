@@ -265,7 +265,7 @@ export const AdminNavbar = () => {
                   }}
                 >
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <a className="dropdown-item" href="/meu_perfil">
                       Meu perfil
                     </a>
                   </li>
