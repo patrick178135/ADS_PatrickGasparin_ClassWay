@@ -21,7 +21,7 @@ class VeiculoService {
       const response = await api.post("/veiculo", data);
       return response; 
     } catch (error) {
-      console.error("Erro ao adicionar Veiculo:");
+      console.error("Erro ao adicionar Veiculo:",);
       throw error;
     } finally {
       console.log("Requisição de cadastro finalizada");

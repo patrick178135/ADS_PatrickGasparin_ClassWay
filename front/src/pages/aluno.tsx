@@ -27,17 +27,6 @@ const Aluno = () => {
   const [cidadeMap, setCidadeMap] = useState<Map<number, string>>(new Map());
   const [perfilMap, setPerfilMap] = useState<Map<number, string>>(new Map());
   const [refresh, setRefresh] = useState(false);
-  const [currentUsuario, setCurrentUsuario] = useState<Usuario>({
-    nome: "",
-    email: "",
-    CPF: "",
-    senhaHash: "",
-    ativo: true,
-    perfil_usuario: 0,
-    cidade: 0,
-  });
-
-
   const [showModalVer, setShowModalVer] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState<Usuario | null>(null);
@@ -61,7 +50,7 @@ const Aluno = () => {
       dados.forEach((cidade: { ID_cidade: number, nome: string }) => map.set(cidade.ID_cidade, cidade.nome));
       setCidadeMap(map);
     } catch (error) {
-      console.error("Erro ao buscar cidades:", error);
+      console.error("Erro ao buscar cidades:");
     }
   };
 
@@ -73,17 +62,17 @@ const Aluno = () => {
       dados.forEach((perfil: { ID_perfil: number, nome: string }) => map.set(perfil.ID_perfil, perfil.nome));
       setPerfilMap(map);
     } catch (error) {
-      console.error("Erro ao buscar perfis:", error);
+      console.error("Erro ao buscar perfis:");
     }
   };
 
   const fetchUsuarios = async () => {
     try {
       setLoading(true);
-      const dados = await usuarioService.getUsuarios();
+      const dados = await usuarioService.getAlunos();
       setUsuarios(dados);
     } catch (error) {
-      console.error("Erro ao buscar usuários:", error);
+      console.error("Erro ao buscar usuários:");
     } finally {
       setLoading(false);
     }
@@ -186,9 +175,10 @@ const Aluno = () => {
       fetchUsuarios();
       setNovaSenha('');
       setConfirmarSenha('');
+      [refresh]
 
     } catch (error) {
-      console.error("Erro ao atualizar o usuário:", error);
+      console.error("Erro ao atualizar o usuário:");
       setMensagem("Ocorreu um erro ao tentar atualizar. Tente novamente.");
       setTipoMensagem("error");
     } finally {
@@ -207,20 +197,17 @@ const Aluno = () => {
     }
 
     try {
-      // 1. Executa a exclusão
       await usuarioService.deleteUsuario(usuarioParaDeletar.ID_usuario);
 
-      // 2. Feedback de sucesso e atualização da lista
       setMensagem("Usuário DELETADO com sucesso!");
       setTipoMensagem("success");
-      setRefresh(prev => !prev); // Atualiza a lista
+      setRefresh(prev => !prev);
 
     } catch (error) {
-      console.error("Erro ao excluir usuário:", error);
+      console.error("Erro ao excluir usuário");
       setMensagem("Erro ao excluir usuário. Tente novamente.");
       setTipoMensagem("error");
     } finally {
-      // 3. Fecha o modal de confirmação
       handleFecharConfirm();
     }
   };
@@ -261,11 +248,13 @@ const Aluno = () => {
       </ToastContainer>
 
       <Container className="mt-5 rounded-4 shadow p-5">
+        <h1 className="mb-4">Lista de Alunos </h1>
+
         <div className="d-flex justify-content-end mb-3">
           <Button href="create.usuario" className="mt-5 shadow">Adicionar Aluno</Button>
         </div>
 
-        <h1 className="mb-4">Lista de Alunos </h1>
+
 
         <Table striped bordered hover responsive>
           <thead>
@@ -274,7 +263,7 @@ const Aluno = () => {
               <th>Nome</th>
               <th>Email</th>
               <th>CPF</th>
-              <th>Ativo</th>
+              <th>Status</th>
               <th>Cidade</th>
               <th></th>
             </tr>
@@ -293,7 +282,11 @@ const Aluno = () => {
                   <td>{u.nome}</td>
                   <td>{u.email}</td>
                   <td>{u.CPF}</td>
-                  <td>{u.ativo ? "Sim" : "Não"}</td>
+                  <td>
+                    <span className={`badge fs-6 rounded-pill ms-2 bg-${u.ativo ? 'success' : 'danger'}`}>
+                      {u.ativo ? "Ativo" : "Inativo"}
+                    </span>
+                  </td>
                   <td>{cidadeMap.get(u.cidade) || u.cidade}</td>
                   <td className="d-flex justify-content-center">
                     <Button
@@ -302,7 +295,7 @@ const Aluno = () => {
                       size="sm"
                       onClick={() => handleEditar(u)}
                     >
-                      <i className="bi bi-pencil me-1"></i> 
+                      <i className="bi bi-pencil me-1"></i>
                     </Button>
 
                     <Button
@@ -311,7 +304,7 @@ const Aluno = () => {
                       size="sm"
                       onClick={() => handleVer(u)}
                     >
-                      <i className="bi bi-eye me-1"></i> 
+                      <i className="bi bi-eye me-1"></i>
                     </Button>
 
                     <Button
@@ -319,7 +312,7 @@ const Aluno = () => {
                       variant="outline-danger"
                       size="sm"
                       onClick={() => handleConfirmarExclusao(u)}                     >
-                      <i className="bi bi-trash me-1"></i> 
+                      <i className="bi bi-trash me-1"></i>
                     </Button>
                   </td>
                 </tr>
