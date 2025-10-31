@@ -65,13 +65,19 @@ export const AdminNavbar = () => {
                 <a className={`nav-link text-light ${libreCaslon.className}`} href="aluno">Alunos</a>
               </li>
               <li className="nav-item">
-                <a className={`nav-link text-light ${libreCaslon.className}`} href="viagem">Viagens</a>
-              </li>
-              <li className="nav-item">
                 <a className={`nav-link text-light ${libreCaslon.className}`} href="motorista">Motoristas</a>
               </li>
               <li className="nav-item">
                 <a className={`nav-link text-light ${libreCaslon.className}`} href="veiculo">Veículos</a>
+              </li>
+              <li className="nav-item">
+                <a className={`nav-link text-light ${libreCaslon.className}`} href="parada">Paradas</a>
+              </li>
+              <li className="nav-item">
+                <a className={`nav-link text-light ${libreCaslon.className}`} href="rota">Rotas</a>
+              </li>
+              <li className="nav-item">
+                <a className={`nav-link text-light ${libreCaslon.className}`} href="viagem">Viagens</a>
               </li>
             </ul>
           </div>
@@ -150,22 +156,22 @@ export const AdminNavbar = () => {
                         </a>
                       </li>
                       <li>
-                        <a className="dropdown-item" href="create.usuario">
+                        <a className="dropdown-item" href="create.parada">
                           Parada
                         </a>
                       </li>
                       <li>
-                        <a className="dropdown-item" href="create.usuario">
+                        <a className="dropdown-item" href="create.rota">
                           Rota
                         </a>
                       </li>
                       <li>
-                        <a className="dropdown-item" href="create.usuario">
+                        <a className="dropdown-item" href="create.veiculo">
                           Veículo
                         </a>
                       </li>
                       <li>
-                        <a className="dropdown-item" href="create.usuario">
+                        <a className="dropdown-item" href="create.viagem">
                           Viagem
                         </a>
                       </li>
