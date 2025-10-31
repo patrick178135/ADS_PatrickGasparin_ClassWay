@@ -49,26 +49,28 @@ export class RotaService {
     }
 
     async findAll() {
-        const rota = await this.rotaRepository.find({
-            order: {
-                ID_rota: 'asc',
-            },
-        });
+      const rota = await this.rotaRepository.find({
+          relations: ['paradas'], 
+          order: {
+              ID_rota: 'asc',
+          },
+      });
 
-        return rota;
-    }
+      return rota;
+  }
 
-    async findOne(ID_rota: number) {
-        const rota = await this.rotaRepository.findOneBy({
-            ID_rota,
-        });
+  async findOne(ID_rota: number) {
+      const rota = await this.rotaRepository.findOne({
+          where: { ID_rota },
+          relations: ['paradas'], 
+      });
 
-        if (!rota) {
-            throw new NotFoundException('Rota não encontrado');
-        }
+      if (!rota) {
+          throw new NotFoundException('Rota não encontrado');
+      }
 
-        return rota;
-    }
+      return rota;
+  }
 
     async update(ID_rota: number, updateRotaDto: UpdateRotaDto) {
         const { nome, partida, destino, paradas } = updateRotaDto;
