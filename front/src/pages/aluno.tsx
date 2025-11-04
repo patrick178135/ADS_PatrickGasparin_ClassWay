@@ -4,6 +4,7 @@ import usuarioService from "../services/usuario.service";
 import { Table, Spinner, Container, Button, Modal, Form, Card, Row, Col, ToastContainer, Toast } from "react-bootstrap";
 import perfilService from "../services/perfil.service";
 import cidadeService from "../services/cidade.service";
+import validacaoService from "../services/validacao.service";
 
 type Usuario = {
   ID_usuario?: number;
@@ -34,6 +35,22 @@ const Aluno = () => {
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [usuarioParaDeletar, setUsuarioParaDeletar] = useState<Usuario | null>(null);
+  const [showModalValidacoes, setShowModalValidacoes] = useState(false);
+  const [validacoes, setValidacoes] = useState<any[]>([]);
+
+  const formatarData = (dataString: string): string => {
+    try {
+      const data = new Date(dataString);
+      const dia = String(data.getDate()).padStart(2, '0');
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const ano = data.getFullYear();
+      const hora = String(data.getHours()).padStart(2, '0');
+      const minuto = String(data.getMinutes()).padStart(2, '0');
+      return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+    } catch (error) {
+      return dataString;
+    }
+  };
 
   useEffect(() => {
     carregarUsuario();
@@ -187,6 +204,21 @@ const Aluno = () => {
         setTipoMensagem(null);
       }, 2000);
     }
+  };
+
+  const handleAbrirValidacoes = async () => {
+
+
+    const dadosValidacoes = await validacaoService.getValidacoesPorUsuario(usuarioSelecionado!.ID_usuario!);
+    console.log('Validações carregadas:', dadosValidacoes);
+    setValidacoes(dadosValidacoes);
+
+    setShowModalValidacoes(true);
+  };
+
+  const handleFecharValidacoes = () => {
+    setShowModalValidacoes(false);
+    setValidacoes([]);
   };
 
 
@@ -381,6 +413,12 @@ const Aluno = () => {
             <Button variant="secondary" onClick={handleFecharVer}>
               Sair
             </Button>
+
+            <Button variant="primary" onClick={handleAbrirValidacoes}>
+              <i className="bi bi-check2-square me-2"></i> Ver Validações
+            </Button>
+
+
           </Modal.Footer>
         </Modal>
 
@@ -589,7 +627,56 @@ const Aluno = () => {
           </Modal.Footer>
         </Modal>
 
+        {/* 
 
+
+        MODAL VER VALIDAÇÕES
+        
+        
+        */}
+
+        <Modal show={showModalValidacoes} onHide={handleFecharValidacoes} size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title>
+              Validações do Aluno: {usuarioSelecionado?.nome}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {validacoes.length === 0 ? (
+              <p className="text-muted">Nenhuma validação encontrada para este Aluno.</p>
+            ) : (
+              <Table striped bordered hover responsive>
+                <thead>
+                  <tr>
+                    <th>Viagem</th>
+                    <th>Tipo</th>
+                    <th>Parada</th>
+                    <th>Data/Hora</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {validacoes.map((validacao, index) => (
+                    <tr key={index}>
+                      <td>{`${validacao.viagem?.nome} `}</td>
+                      <td>
+                        <span className={`badge fs-6 rounded-pill ms-2 bg-${validacao.tipo_evento === 'embarque' ? 'success' : 'danger'}`}>
+                          {validacao.tipo_evento === 'embarque' ? 'Embarque' : 'Desembarque'}
+                        </span>
+                      </td>
+                      <td>{`${validacao.parada?.nome}`}</td>
+                      <td>{formatarData(validacao.data_hora)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleFecharValidacoes}>
+              Fechar
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </>
   );
