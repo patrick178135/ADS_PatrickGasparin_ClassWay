@@ -16,6 +16,16 @@ constructor(private readonly validacaoService: ValidacaoService) {}
     createMany(@Body() validacoes: CreateValidacaoDto[]) {
       return this.validacaoService.createMany(validacoes);
     }
+
+    @Get('viagem/:idViagem')
+    byIdViagem(@Param('idViagem') idViagem: string) {
+    return this.validacaoService.findAllByViagem(+idViagem);
+    }
+
+    @Get('usuario/:idAluno')
+    byIdAluno(@Param('idAluno') idAluno: string) {
+    return this.validacaoService.findAllByUsuario(+idAluno);
+    }
     
     @Get()
     findAll() {
