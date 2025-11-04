@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/src/context/AuthContext";
 import { Libre_Caslon_Text } from "next/font/google";
+import router from "next/router";
 
 const libreCaslon = Libre_Caslon_Text({
   subsets: ['latin'],
@@ -11,12 +12,9 @@ const Home = () => {
   const { usuario, loading, carregarUsuario } = useAuth();
   const [horaAtual, setHoraAtual] = useState(new Date());
 
+  // carrega o usuário e atualiza o relógio a cada 1000 milissegundo 
   useEffect(() => {
     carregarUsuario();
-  }, []);
-
-  //Atualiza o relógio a cada 1000 milissegundo
-  useEffect(() => {
     const interval = setInterval(() => {
       setHoraAtual(new Date());
     }, 1000);
@@ -39,6 +37,10 @@ const Home = () => {
     second: "2-digit",
   });
 
+  const irViagem = () => {
+    router.push("/viagem");
+  }
+
   return (
     <body className={`${libreCaslon.className} bg-`} > 
 
@@ -47,7 +49,7 @@ const Home = () => {
         <h2 className="mb-5 text-dark">Bem-vindo, {usuario.nome}!</h2>
         <p className="text-dark mb-5 ">{dataFormatada}</p>
         <h1 className="display-1 fw-bold text-primary m-5">{horaFormatada}</h1>
-        <button type="button" className="btn btn-outline-dark" >Viagens</button>
+        <button type="button" className="btn btn-outline-dark" onClick={irViagem}>Viagens</button>
       </div>
     </body>
   );

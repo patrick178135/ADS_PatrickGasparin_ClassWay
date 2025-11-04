@@ -21,14 +21,12 @@ export const AdminNavbar = () => {
   const logout = useLogout();
   const { usuario } = useAuth();
 
-  const [offcanvasOpen, setOffcanvasOpen] = useState(false);
-  const [dropdownOpenCadastro, setDropdownOpenCadastro] = useState(false);
-  const [dropdownOpenViagem, setDropdownOpenViagem] = useState(false);
-  const [dropdownOpenMotorista, setDropdownOpenMotorista] = useState(false);
+  const [offcanvasOpen, setOffcanvasOpen] = useState(false);;
+  const [dropdownOpenPaginas, setDropdownOpenPaginas] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [perfis, setPerfis] = useState<{ ID_perfil: number, nome: string }[]>([]);
   const [perfilMap, setPerfilMap] = useState<Map<number, string>>(new Map());
-  
+
   useEffect(() => {
     fetchPerfis();
   }, []);
@@ -47,6 +45,51 @@ export const AdminNavbar = () => {
 
   const irDashboard = () => {
     router.push("/dashboard");
+    setOffcanvasOpen(false)
+  }
+
+  const irAluno = () => {
+    router.push("/create.aluno");
+    setOffcanvasOpen(false)
+  }
+
+  const irMotorista = () => {
+    router.push("/create.motorista");
+    setOffcanvasOpen(false)
+  }
+
+  const irUsuário = () => {
+    router.push("/create.usuario");
+    setOffcanvasOpen(false)
+  }
+
+  const irVeiculo = () => {
+    router.push("/create.veiculo");
+    setOffcanvasOpen(false)
+  }
+
+  const irParada = () => {
+    router.push("/create.parada");
+    setOffcanvasOpen(false)
+  }
+
+  const irRota = () => {
+    router.push("/create.rota");
+    setOffcanvasOpen(false)
+  }
+
+  const irViagem = () => {
+    router.push("/create.viagem");
+    setOffcanvasOpen(false)
+  }
+
+  const irCidade = () => {
+    router.push("/create.cidade");
+    setOffcanvasOpen(false)
+  }
+  
+  const irPerfil = () => {
+    router.push("/create.perfil");
     setOffcanvasOpen(false)
   }
 
@@ -79,6 +122,9 @@ export const AdminNavbar = () => {
               <li className="nav-item">
                 <a className={`nav-link text-light ${libreCaslon.className}`} href="viagem">Viagens</a>
               </li>
+              <li className="nav-item">
+                <a className={`nav-link text-light ${libreCaslon.className}`} href="usuario">Usuários</a>
+              </li>
             </ul>
           </div>
 
@@ -105,12 +151,12 @@ export const AdminNavbar = () => {
               width: "300px",
               height: "100vh",
               zIndex: 1050,
-              backgroundColor: 'rgb(102, 17, 17)' 
+              backgroundColor: 'rgb(102, 17, 17)'
             }}
           >
             <div>
               <div className="offcanvas-header">
-                <h5 className="offcanvas-title text-light" >Menu</h5>
+                <h4 className="offcanvas-title text-light" >Menu</h4>
                 <button
                   type="button"
                   className="btn-close"
@@ -118,22 +164,20 @@ export const AdminNavbar = () => {
                 ></button>
               </div>
 
-              <div className="offcanvas-body">
+              <div className="dropdown m-3">
+                <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irDashboard} >Dashboard</button>
+              </div>
 
-                <div className="dropdown mt-3">
-                  <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irDashboard} >Dashboard</button>
-                </div>
-
-                <div className="dropdown mt-3">
+              <div className="dropdown m-3">
                   <button
                     className="btn btn-outline-secondary dropdown-toggle w-100 text-start text-light" data-bs-toggle="dropdown"
                     onClick={() =>
-                      setDropdownOpenCadastro(!dropdownOpenCadastro)
+                      setDropdownOpenPaginas(!dropdownOpenPaginas)
                     }
                   >
-                    Cadastro
+                    Páginas
                   </button>
-                  {dropdownOpenCadastro && (
+                  {dropdownOpenPaginas && (
                     <ul className="dropdown-menu show w-100">
                       <li>
                         <a className="dropdown-item" href="aluno">
@@ -141,104 +185,91 @@ export const AdminNavbar = () => {
                         </a>
                       </li>
                       <li>
-                        <a className="dropdown-item" href="create.usuario">
-                          Motorista
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="create.usuario">
-                          Usuário Admin
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="create.usuario">
-                          Cidade
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="create.parada">
-                          Parada
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="create.rota">
-                          Rota
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="create.veiculo">
-                          Veículo
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="create.viagem">
+                        <a className="dropdown-item" href="viagem">
                           Viagem
                         </a>
                       </li>
                       <li>
-                        <a className="dropdown-item" href="create.cidade">
+                        <a className="dropdown-item" href="rota">
+                          Rota
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="motorista">
+                          Motorista
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="veiculo">
+                          Veículo
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="parada">
+                          Parada
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="cidade">
                           Cidade
                         </a>
                       </li>
                       <li>
-                        <a className="dropdown-item" href="create.perfil">
+                        <a className="dropdown-item" href="perfil">
                           Perfil
                         </a>
                       </li>
-                    </ul>
-                  )}
-                </div>
-
-                <div className="dropdown mt-3">
-                  <button
-                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start text-light"
-                    onClick={() =>
-                      setDropdownOpenViagem(!dropdownOpenViagem)
-                    }
-                  >
-                    Viagens
-                  </button>
-                  {dropdownOpenViagem && (
-                    <ul className="dropdown-menu show w-100">
                       <li>
-                        <a className="dropdown-item" href="viagem">
-                          Listar viagens
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="create.viagem">
-                          Criar viagem
+                        <a className="dropdown-item" href="usuario">
+                          Usuário
                         </a>
                       </li>
                     </ul>
                   )}
                 </div>
 
-                <div className="dropdown mt-3">
-                  <button
-                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start text-light"
-                    onClick={() =>
-                      setDropdownOpenMotorista(!dropdownOpenMotorista)
-                    }
-                  >
-                    Motoristas
-                  </button>
-                  {dropdownOpenMotorista && (
-                    <ul className="dropdown-menu show w-100">
-                      <li>
-                        <a className="dropdown-item" href="motorista">
-                          Listar motoristas
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="create.usuario">
-                          Adicionar motorista
-                        </a>
-                      </li>
-                    </ul>
-                  )}
-                </div>
+              <h5 className="text-light m-3 mt-5">Cadastros:</h5>
+
+              <div className="dropdown m-3">
+                <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irAluno} >Aluno</button>
               </div>
+
+              <div className="dropdown m-3">
+                <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irViagem} >Viagem</button>
+              </div>
+
+              <div className="dropdown m-3">
+                <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irRota} >Rota</button>
+              </div>
+
+              <div className="dropdown m-3">
+                <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irMotorista} >Motorista</button>
+              </div>  
+
+              <div className="dropdown m-3">
+                <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irVeiculo} >Veículo</button>
+              </div>
+
+              <div className="dropdown m-3">
+                <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irParada} >Parada</button>
+              </div>
+
+              <div className="dropdown m-3">
+                <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irCidade} >Cidade</button>
+              </div> 
+
+              <div className="dropdown m-3">
+                <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irPerfil} >Perfil</button>
+              </div>
+
+
+              <div className="dropdown m-3">
+                <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irUsuário} >Usuário</button>
+              </div>
+
+              
+
+
             </div>
 
             <div
@@ -273,11 +304,6 @@ export const AdminNavbar = () => {
                   <li>
                     <a className="dropdown-item" href="/meu_perfil">
                       Meu perfil
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Configurações
                     </a>
                   </li>
                   <li>

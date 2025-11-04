@@ -251,7 +251,7 @@ const Aluno = () => {
         <h1 className="mb-4">Lista de Alunos </h1>
 
         <div className="d-flex justify-content-end mb-3">
-          <Button href="create.usuario" className="mt-5 shadow">Adicionar Aluno</Button>
+          <Button href="create.aluno" className="mt-5 shadow">Adicionar Aluno</Button>
         </div>
 
 
