@@ -6,7 +6,27 @@ const api = axios.create({
 
 class ValidacaoService {
 
-  async getValidacaos() {
+  async getValidacoesPorViagem(idViagem: number) {
+    try {
+      const response = await api.get(`/validacao/viagem/${idViagem}`); 
+      return response.data;
+    } catch (error) {
+      console.error(`Erro ao buscar Validações para a Viagem ${idViagem}:`);
+      throw error;
+    }
+  }
+
+  async getValidacoesPorUsuario(idUsuario: number) {
+    try {
+      const response = await api.get(`/validacao/usuario/${idUsuario}`); 
+      return response.data;
+    } catch (error) {
+      console.error(`Erro ao buscar Validações para o usuário ${idUsuario}:`);
+      throw error;
+    }
+  }
+
+  async getValidacoes() {
     try {
       const response = await api.get("/validacao");
       return response.data;

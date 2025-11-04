@@ -23,7 +23,6 @@ const Viagem = () => {
   const [tipoMensagem, setTipoMensagem] = useState<"success" | "error" | "warning" | "info" | null>(null);
   const [viagens, setViagens] = useState<Viagem[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [admins, setAdmins] = useState<{ ID_usuario: number, nome: string }[]>([]);
   const [adminMap, setAdminMap] = useState<Map<number, string>>(new Map());
   const [motoristas, setMotoristas] = useState<{ ID_usuario: number, nome: string }[]>([]);
@@ -34,7 +33,6 @@ const Viagem = () => {
   const [VeiculoMap, setVeiculoMap] = useState<Map<number, string>>(new Map());
   const [alunos, setAlunos] = useState<{ ID_usuario: number, nome: string }[]>([]);
   const [alunoMap, setAlunoMap] = useState<Map<number, string>>(new Map());
-
   const [refresh, setRefresh] = useState(false);
   const [showModalVer, setShowModalVer] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
@@ -46,6 +44,8 @@ const Viagem = () => {
   const [showModalConfirmValidacao, setShowModalConfirmValidacao] = useState(false);
   const [tipoEvento, setTipoEvento] = useState<'embarque' | 'desembarque'>('embarque');
   const [alunosSelecionados, setAlunosSelecionados] = useState<any[]>([]);
+  const [showModalValidacoes, setShowModalValidacoes] = useState(false);
+  const [validacoes, setValidacoes] = useState<any[]>([]);
 
 
   // formatar data no formato dia/mês/ano hora:minuto
@@ -326,6 +326,21 @@ const Viagem = () => {
     setShowModalConfirmValidacao(true);
   };
 
+  const handleAbrirValidacoes = async () => {
+
+
+    const dadosValidacoes = await validacaoService.getValidacoesPorViagem(viagemSelecionada!.ID_viagem!);
+    console.log('Validações carregadas:', dadosValidacoes);
+    setValidacoes(dadosValidacoes);
+
+    setShowModalValidacoes(true);
+  };
+
+  const handleFecharValidacoes = () => {
+    setShowModalValidacoes(false);
+    setValidacoes([]);
+  };
+
 
   if (loadingAuth) return <Spinner animation="border" />;
   if (!usuario) return <p>Usuário não logado</p>;
@@ -497,6 +512,11 @@ const Viagem = () => {
                 <i className="bi bi-pin-map me-2"></i>Ver Alunos ({viagemSelecionada.alunos.length})
               </Button>
             )}
+
+            <Button variant="primary" onClick={handleAbrirValidacoes}>
+              <i className="bi bi-check2-square me-2"></i> Ver Validações
+            </Button>
+
 
             <Button variant="secondary" onClick={handleFecharVer}>
               Sair
@@ -904,6 +924,56 @@ const Viagem = () => {
           </Modal.Footer>
         </Modal>
 
+        {/* 
+
+
+        MODAL VER VALIDAÇÕES
+        
+        
+        */}
+
+        <Modal show={showModalValidacoes} onHide={handleFecharValidacoes} size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title>
+              Validações da Viagem: {viagemSelecionada?.nome}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {validacoes.length === 0 ? (
+              <p className="text-muted">Nenhuma validação encontrada para esta viagem.</p>
+            ) : (
+              <Table striped bordered hover responsive>
+                <thead>
+                  <tr>
+                    <th>Aluno</th>
+                    <th>Tipo</th>
+                    <th>Parada</th>
+                    <th>Data/Hora</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {validacoes.map((validacao, index) => (
+                    <tr key={index}>
+                      <td>{`${validacao.aluno?.nome} `}</td>
+                      <td>  
+                        <span className={`badge fs-6 rounded-pill ms-2 bg-${validacao.tipo_evento === 'embarque' ? 'success' : 'danger'}`}>
+                          {validacao.tipo_evento === 'embarque' ? 'Embarque' : 'Desembarque'}
+                        </span>
+                      </td>
+                      <td>{`${validacao.parada?.nome}`}</td>
+                      <td>{formatarData(validacao.data_hora)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleFecharValidacoes}>
+              Fechar
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </>
   );
