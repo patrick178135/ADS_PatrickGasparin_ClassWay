@@ -12,6 +12,11 @@ constructor(private readonly validacaoService: ValidacaoService) {}
         return this.validacaoService.create(createValidacaoDto);
     }
 
+    @Post('lote')
+    createMany(@Body() validacoes: CreateValidacaoDto[]) {
+      return this.validacaoService.createMany(validacoes);
+    }
+    
     @Get()
     findAll() {
     return this.validacaoService.findAll();

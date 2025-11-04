@@ -94,7 +94,7 @@ const Login = () => {
 
       <div className="col-12 col-md-4 d-flex align-items-center justify-content-center bg-light p-3">
         <div style={{ width: '100%', maxWidth: '400px' }} className="p-5 rounded-4 shadow">
-          <h1 className={`text-center mb-4 text-primary ${leckerliOne.className}`}>ClasWay</h1>
+          <h1 className={`text-center mb-4 text-primary ${leckerliOne.className}`}>ClassWay</h1>
 
           <Row>
             <Col className="bg-lightrounded-5">

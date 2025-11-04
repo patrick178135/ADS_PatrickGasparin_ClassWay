@@ -89,7 +89,7 @@ const Usuarios = () => {
           cidade: 0,
         });
         setRefresh(!refresh);
-        irUsuario();
+        irAluno();
       }
     } catch (error) {
       console.error("Erro ao adicionar usuário:");
@@ -118,8 +118,8 @@ const Usuarios = () => {
     setCidades(resultado);
   };
 
-  const irUsuario = () => {
-    router.push("/usuario");
+  const irAluno = () => {
+    router.push("/aluno");
   }
 
 
@@ -181,7 +181,7 @@ const Usuarios = () => {
 
         <Card className="shadow-lg p-3" style={{ maxWidth: '900px', margin: '0 auto' }}>
           <Card.Header className="text-center">
-            <h2 className="mb-0">Cadastrar Usuário</h2>
+            <h2 className="mb-0">Cadastrar Aluno</h2>
           </Card.Header>
 
           <Card.Body>
