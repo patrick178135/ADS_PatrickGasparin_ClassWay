@@ -262,7 +262,7 @@ const Motorista = () => {
 
       <Container className="mt-5 rounded-4 shadow p-5">
         <div className="d-flex justify-content-end mb-3">
-          <Button href="create.usuario" className="mt-5 shadow">Adicionar Motorista</Button>
+          <Button href="create.motorista" className="mt-5 shadow">Adicionar Motorista</Button>
         </div>
 
         <h1 className="mb-4">Lista de Motoristas</h1>

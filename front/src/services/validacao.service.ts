@@ -16,6 +16,10 @@ class ValidacaoService {
     }
   }
 
+  async criarValidacoesEmLote(validacoes: any[]) {
+    return await api.post("/validacao/lote", validacoes);
+  }
+
   async addValidacao(data: any) {
     try {
       const response = await api.post("/validacao", data);

@@ -89,7 +89,7 @@ const Usuarios = () => {
           cidade: 0,
         });
         setRefresh(!refresh);
-        irUsuario();
+        irMotorista();
       }
     } catch (error) {
       console.error("Erro ao adicionar usuário:");
@@ -118,8 +118,8 @@ const Usuarios = () => {
     setCidades(resultado);
   };
 
-  const irUsuario = () => {
-    router.push("/usuario");
+  const irMotorista = () => {
+    router.push("/motorista");
   }
 
 
@@ -168,7 +168,7 @@ const Usuarios = () => {
       <Container className="mt-5">
 
         <div className="d-flex justify-content-start mb-4">
-          <Button href="aluno">Voltar</Button>
+          <Button href="motorista">Voltar</Button>
         </div>
 
         <div className="d-flex justify-content-end">
@@ -181,7 +181,7 @@ const Usuarios = () => {
 
         <Card className="shadow-lg p-3" style={{ maxWidth: '900px', margin: '0 auto' }}>
           <Card.Header className="text-center">
-            <h2 className="mb-0">Cadastrar Usuário</h2>
+            <h2 className="mb-0">Cadastrar Motorista</h2>
           </Card.Header>
 
           <Card.Body>
