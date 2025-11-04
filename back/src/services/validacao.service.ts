@@ -33,6 +33,27 @@ export class ValidacaoService {
         }
     }
 
+    async createMany(validacoesDtos: CreateValidacaoDto[]) {
+        try {
+          const agora = new Date();
+      
+          const validacoes = validacoesDtos.map(dto =>
+            this.validacaoRepository.create({
+              tipo_evento: dto.tipo_evento,
+              data_hora: agora,
+              aluno: dto.aluno,
+              parada: dto.parada,
+              viagem: dto.viagem,
+            }),
+          );
+      
+          return await this.validacaoRepository.save(validacoes);
+        } catch (error) {
+          console.error('Erro ao salvar validações em lote:', error);
+          throw error;
+        }
+      }
+    
     async findAll() {
         const validacao = await this.validacaoRepository.find({
             order: {

@@ -75,38 +75,30 @@ export class ViagemService {
     return rota;
 }
 
-  async update(ID_viagem: number, updateViagemDto: UpdateViagemDto) {
-    const { nome, data, admin, motorista, rota, veiculo, alunos } = updateViagemDto;
+async update(ID_viagem: number, updateViagemDto: UpdateViagemDto) {
+  const { nome, data, admin, motorista, rota, veiculo, alunos } = updateViagemDto;
 
-    let alunosEntities: Usuario[] | undefined;
+  const alunosEntities = alunos && alunos.length > 0
+    ? await this.usuarioRepository.findBy({ ID_usuario: In(alunos) })
+    : [];
 
-    if (alunos && alunos.length > 0) {
-      alunosEntities = await this.usuarioRepository.findBy({
-        ID_usuario: In(alunos),
-      });
+  const viagem = await this.viagemRepository.preload({
+    ID_viagem,
+    nome,
+    data,
+    admin,
+    motorista,
+    rota,
+    veiculo,
+    alunos: alunosEntities,
+  });
 
-      if (!alunosEntities || alunosEntities.length !== alunos.length) {
-        throw new NotFoundException("Um ou mais alunos informados não existem");
-      }
-    }
-
-    const viagem = await this.viagemRepository.preload({
-      ID_viagem,
-      nome,
-      data,
-      admin,
-      motorista,
-      rota,
-      veiculo,
-      ...(alunosEntities ? { alunos: alunosEntities } : {}),
-    });
-
-    if (!viagem) {
-      throw new NotFoundException('Viagem não encontrada.');
-    }
-
-    return this.viagemRepository.save(viagem);
+  if (!viagem) {
+    throw new NotFoundException('Viagem não encontrada.');
   }
+
+  return this.viagemRepository.save(viagem);
+}
 
   async remove(id: number) {
     const viagem = await this.viagemRepository.findOneBy({ ID_viagem: id });

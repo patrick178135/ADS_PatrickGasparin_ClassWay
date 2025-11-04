@@ -72,36 +72,27 @@ export class RotaService {
       return rota;
   }
 
-    async update(ID_rota: number, updateRotaDto: UpdateRotaDto) {
-        const { nome, partida, destino, paradas } = updateRotaDto;
-      
-        let paradasEntities: Parada[] | undefined;
-
-            if (paradas && paradas.length > 0) {
-            paradasEntities = await this.paradaRepository.findBy({
-                ID_parada: In(paradas),
-            });
-
-            if (!paradasEntities || paradasEntities.length !== paradas.length) {
-                throw new NotFoundException("Uma ou mais paradas informadas não existem");
-                }
-            }
-      
-        const rota = await this.rotaRepository.preload({
-          ID_rota,
-          nome,
-          partida,
-          destino,
-          ...(paradasEntities ? { paradas: paradasEntities } : {}),
-        });
-      
-        if (!rota) {
-          throw new NotFoundException('Rota não encontrada.');
-        }
-      
-        return this.rotaRepository.save(rota);
-      }
-
+  async update(ID_rota: number, updateRotaDto: UpdateRotaDto) {
+    const { nome, partida, destino, paradas } = updateRotaDto;
+  
+    const paradasEntities = paradas && paradas.length > 0
+      ? await this.paradaRepository.findBy({ ID_parada: In(paradas) })
+      : [];
+  
+    const rota = await this.rotaRepository.preload({
+      ID_rota,
+      nome,
+      partida,
+      destino,
+      paradas: paradasEntities, 
+    });
+  
+    if (!rota) {
+      throw new NotFoundException('Rota não encontrada.');
+    }
+  
+    return this.rotaRepository.save(rota);
+  }
     async remove(id: number) {
         const rota = await this.rotaRepository.findOneBy({ ID_rota: id });
         if (!rota) {
