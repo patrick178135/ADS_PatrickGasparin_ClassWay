@@ -91,9 +91,13 @@ const Veiculo = () => {
 
         return <div> <a>Usuário não Logado</a> <a href="/login">Clique aqui para fazer Login</a></div>
     }
+    if (usuario.perfil != 1) return <p>É preciso ser Administrador para acessar essa página</p>;
+
 
     return (
         <>
+        <title>Cadastro Veículo</title>
+        
             <ToastContainer
                 className="p-3"
                 position="top-end"

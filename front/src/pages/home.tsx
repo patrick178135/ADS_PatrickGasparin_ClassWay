@@ -22,7 +22,13 @@ const Home = () => {
   }, []);
 
   if (loading) return <p>Carregando...</p>;
-  if (!usuario) return <p>Usuário não logado</p>;
+  if (!usuario)
+    return (
+      <>
+        <p>Usuário não logado</p>
+        <a href="login">Voltar para o Login</a>
+      </>
+    ); 
 
   const dataFormatada = horaAtual.toLocaleDateString("pt-BR", {
     weekday: "long",
@@ -37,11 +43,10 @@ const Home = () => {
     second: "2-digit",
   });
 
-  const irViagem = () => {
-    router.push("/viagem");
-  }
-
   return (
+    <>
+    <title>Home</title>
+    
     <body className={`${libreCaslon.className} bg-`} > 
 
 
@@ -49,9 +54,9 @@ const Home = () => {
         <h2 className="mb-5 text-dark">Bem-vindo, {usuario.nome}!</h2>
         <p className="text-dark mb-5 ">{dataFormatada}</p>
         <h1 className="display-1 fw-bold text-primary m-5">{horaFormatada}</h1>
-        <button type="button" className="btn btn-outline-dark" onClick={irViagem}>Viagens</button>
       </div>
     </body>
+    </>
   );
 };
 

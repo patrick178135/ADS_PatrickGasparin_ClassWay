@@ -8,7 +8,7 @@ class ValidacaoService {
 
   async getValidacoesPorViagem(idViagem: number) {
     try {
-      const response = await api.get(`/validacao/viagem/${idViagem}`); 
+      const response = await api.get(`/validacao/viagem/${idViagem}`);
       return response.data;
     } catch (error) {
       console.error(`Erro ao buscar Validações para a Viagem ${idViagem}:`);
@@ -18,10 +18,20 @@ class ValidacaoService {
 
   async getValidacoesPorUsuario(idUsuario: number) {
     try {
-      const response = await api.get(`/validacao/usuario/${idUsuario}`); 
+      const response = await api.get(`/validacao/usuario/${idUsuario}`);
       return response.data;
     } catch (error) {
       console.error(`Erro ao buscar Validações para o usuário ${idUsuario}:`);
+      throw error;
+    }
+  }
+
+  async getValidacoesAlunoViagem(idViagem: number, idAluno: number) {
+    try {
+      const response = await api.get(`/validacao/viagem/${idViagem}/aluno/${idAluno}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Erro ao buscar Validações para o aluno ${idAluno} na viagem ${idViagem}:`);
       throw error;
     }
   }
@@ -43,7 +53,7 @@ class ValidacaoService {
   async addValidacao(data: any) {
     try {
       const response = await api.post("/validacao", data);
-      return response; 
+      return response;
     } catch (error) {
       console.error("Erro ao adicionar Validacao:");
       throw error;
