@@ -71,6 +71,7 @@ const Cidade = () => {
 
     return <div> <a>Usuário não Logado</a> <a href="/login">Clique aqui para fazer Login</a></div>
   }
+  if (usuario.perfil != 1) return <p>É preciso ser Administrador para acessar essa página</p>;
 
   const handleCloseToast = () => {
     setMensagem(null);
@@ -79,6 +80,8 @@ const Cidade = () => {
 
   return (
     <>
+    <title>Cadastro cidade</title>
+    
     <ToastContainer
       className="p-3"
       position="top-end"

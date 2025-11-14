@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useAuth } from "@/src/context/AuthContext";
+import { title } from "process";
 
 const Dashboard = () => {
   const { usuario, loading, carregarUsuario } = useAuth();
@@ -9,9 +10,20 @@ const Dashboard = () => {
   }, []);
 
   if (loading) return <p>Carregando...</p>;
-  if (!usuario) return <p>Usuário não logado</p>;
+  if (!usuario)
+    return (
+      <>
+        <p>Usuário não logado</p>
+        <a href="login">Voltar para o Login</a>
+      </>
+    ); 
+  if (usuario.perfil != 1) return <p>É preciso ser Administrador para acessar essa página</p>;
+
 
   return (
+    <>
+    <title>Dashboard</title>
+    
     <div className="container-sm">
       <div className="row">
         <div className="col-12 col-md-4 bg-warning p-3 text-white text-center">
@@ -43,6 +55,7 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

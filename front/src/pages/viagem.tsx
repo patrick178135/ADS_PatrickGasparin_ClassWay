@@ -236,7 +236,7 @@ const Viagem = () => {
       setAlunosSelecionados([]);
       setShowModalConfirmValidacao(false);
     } catch (error) {
-      console.error("Erro ao criar validações:", error);
+      console.error("Erro ao criar validações:");
       setMensagem("Erro ao registrar validação.");
       setTipoMensagem("error");
     } finally {
@@ -343,11 +343,20 @@ const Viagem = () => {
 
 
   if (loadingAuth) return <Spinner animation="border" />;
-  if (!usuario) return <p>Usuário não logado</p>;
+  if (!usuario)
+    return (
+      <>
+        <p>Usuário não logado</p>
+        <a href="login">Voltar para o Login</a>
+      </>
+    );   
+  // if (usuario.perfil != 1) return <p>É preciso ser Administrador para acessar essa página</p>;
   if (loading) return <Spinner animation="border" />;
 
   return (
     <>
+    <title>Viagens</title>
+    
       <ToastContainer
         className="p-3"
         position="top-end"

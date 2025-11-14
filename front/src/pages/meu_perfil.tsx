@@ -128,12 +128,22 @@ const MeuPerfil = () => {
 
 
   if (loadingAuth || loading) return <div className="text-center mt-5"><Spinner animation="border" /></div>;
-  if (!usuarioToken) return <p>Usuário não logado</p>;
+  if (!usuarioToken)
+    return (
+      <>
+        <p>Usuário não logado</p>
+        <a href="login">Voltar para o Login</a>
+      </>
+    );   
   if (!perfilData) return <Alert className="mt-5">Nenhum dado de perfil encontrado para o ID {usuarioToken.sub}.</Alert>;
+  
 
   const usuario = perfilData; 
 
   return (
+    <>
+    <title>Meu Perfil</title>
+    
     <Container className="mt-5 rounded-4 shadow p-5">
 
       <h1 className="mb-4">Meu Perfil:</h1>
@@ -251,6 +261,7 @@ const MeuPerfil = () => {
         </Modal.Footer>
       </Modal>
     </Container>
+    </>
   );
 };
 
