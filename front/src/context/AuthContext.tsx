@@ -23,8 +23,9 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [usuario, setUsuario] = useState<UsuarioToken>();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Começa como true
 
+  // Função para carregar o usuário, agora também controla o estado de loading
   const carregarUsuario = () => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -33,16 +34,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUsuario(decoded);
       } catch (error) {
         console.error("Erro ao decodificar token:", error);
-        setUsuario(undefined);
+        setUsuario(undefined); // Limpa o usuário em caso de token inválido
       }
     } else {
-      setUsuario(undefined);
+      setUsuario(undefined); // Garante que não há usuário se não houver token
     }
+    // Defina o loading como false APENAS DEPOIS de tentar carregar o usuário
+    setLoading(false);
   };
 
+  // O useEffect agora só precisa chamar a função
   useEffect(() => {
     carregarUsuario();
-    setLoading(false);
   }, []);
 
   return (

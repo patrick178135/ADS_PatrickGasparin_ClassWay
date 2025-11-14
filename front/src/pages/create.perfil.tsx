@@ -19,10 +19,8 @@ const Perfil = () => {
     nome: "",
   });
 
-  if (!usuario) {
 
-    return <div> <a>Usuário não Logado</a> <a href="/login">Clique aqui para fazer Login</a></div>
-  }
+
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -65,9 +63,17 @@ const Perfil = () => {
     setTipoMensagem(null);
   };
 
+  if (!usuario) {
+
+    return <div> <a>Usuário não Logado</a> <a href="/login">Clique aqui para fazer Login</a></div>
+  }
+  if (usuario.perfil != 1) return <p>É preciso ser Administrador para acessar essa página</p>;
+
 
   return (
     <>
+    <title>Cadastro Perfil</title>
+    
     <ToastContainer
       className="p-3"
       position="top-end"
