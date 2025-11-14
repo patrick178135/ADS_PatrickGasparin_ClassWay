@@ -4,7 +4,7 @@ import { equal } from 'assert';
 import { CreateValidacaoDto } from 'src/dto/create-validacao.dto';
 import { UpdateValidacaoDto } from 'src/dto/update-validacao.dto';
 import { Validacao } from 'src/entities/validacao.entiy';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class ValidacaoService {
@@ -133,4 +133,16 @@ export class ValidacaoService {
         }
         return this.validacaoRepository.remove(validacao);
     }
+
+    async getValidacoesAlunoViagem(idViagem: number, idAluno: number): Promise<Validacao[]> {
+        return this.validacaoRepository.find({
+          where: {
+            viagem: idViagem, 
+            aluno: idAluno,   
+            tipo_evento: In(['embarque', 'desembarque']),
+          },
+          relations: ['parada'], 
+          order: { data_hora: 'DESC' },
+        });
+      }
 }

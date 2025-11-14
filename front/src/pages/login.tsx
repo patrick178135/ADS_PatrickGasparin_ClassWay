@@ -76,6 +76,9 @@ const Login = () => {
   
 
   return (
+    <>
+    <title>Loign</title>
+    
     <div className="row vh-100">
       <div
         className="col-12 col-md-8 d-flex align-items-top p-5 justify-content-center text-white text-center"
@@ -145,7 +148,7 @@ const Login = () => {
         </div>
       </div>
     </div>
-
+    </>
   );
 };
 
