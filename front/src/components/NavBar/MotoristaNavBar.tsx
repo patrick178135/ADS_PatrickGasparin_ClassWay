@@ -22,11 +22,10 @@ export const MotoristaNavbar = () => {
   const { usuario } = useAuth();
 
   const [offcanvasOpen, setOffcanvasOpen] = useState(false);
-  const [dropdownOpenViagem, setDropdownOpenViagem] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [perfis, setPerfis] = useState<{ ID_perfil: number, nome: string }[]>([]);
   const [perfilMap, setPerfilMap] = useState<Map<number, string>>(new Map());
-  
+
   useEffect(() => {
     fetchPerfis();
   }, []);
@@ -43,8 +42,13 @@ export const MotoristaNavbar = () => {
     }
   };
 
-  const irDashboard = () => {
-    router.push("/dashboard");
+  const irHistorico = () => {
+    router.push("/viagem_historico_motorista");
+    setOffcanvasOpen(false)
+  }
+
+  const irAgenda = () => {
+    router.push("/viagem_agenda_motorista");
     setOffcanvasOpen(false)
   }
 
@@ -60,7 +64,10 @@ export const MotoristaNavbar = () => {
           <div className="d-none d-sm-block w-100 mt-2">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className={`nav-link text-light ${libreCaslon.className}`} href="viagem">Viagens</a>
+                <a className={`nav-link text-light ${libreCaslon.className}`} href="viagem_historico_motorista">Histórico</a>
+              </li>
+              <li className="nav-item">
+                <a className={`nav-link text-light ${libreCaslon.className}`} href="viagem_agenda_motorista">Agenda</a>
               </li>
             </ul>
           </div>
@@ -88,7 +95,7 @@ export const MotoristaNavbar = () => {
               width: "300px",
               height: "100vh",
               zIndex: 1050,
-              backgroundColor: 'rgb(102, 17, 17)' 
+              backgroundColor: 'rgb(102, 17, 17)'
             }}
           >
             <div>
@@ -103,33 +110,12 @@ export const MotoristaNavbar = () => {
 
               <div className="offcanvas-body">
 
-                <div className="dropdown mt-3">
-                  <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irDashboard} >Dashboard</button>
+                <div className="dropdown m-3">
+                  <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irHistorico}>Histórico</button>
                 </div>
 
-                <div className="dropdown mt-3">
-                  <button
-                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start text-light"
-                    onClick={() =>
-                      setDropdownOpenViagem(!dropdownOpenViagem)
-                    }
-                  >
-                    Viagens
-                  </button>
-                  {dropdownOpenViagem && (
-                    <ul className="dropdown-menu show w-100">
-                      <li>
-                        <a className="dropdown-item" href="viagem">
-                          Listar viagens
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="create.viagem">
-                          Criar viagem
-                        </a>
-                      </li>
-                    </ul>
-                  )}
+                <div className="dropdown m-3">
+                  <button className="btn btn-outline-secondary w-100 text-start text-light" onClick={irAgenda}>Agenda</button>
                 </div>
 
               </div>
@@ -165,13 +151,8 @@ export const MotoristaNavbar = () => {
                   }}
                 >
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <a className="dropdown-item" href="meu_perfil">
                       Meu perfil
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Configurações
                     </a>
                   </li>
                   <li>

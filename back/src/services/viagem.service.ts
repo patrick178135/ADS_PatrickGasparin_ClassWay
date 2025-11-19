@@ -50,7 +50,7 @@ export class ViagemService {
 
   async findAll() {
     const viagem = await this.viagemRepository.find({
-      relations: ['alunos'],
+      relations: ['alunos', 'rota', 'veiculo', 'admin', 'motorista'],
       order: {
         data: 'DESC',
       },
@@ -81,6 +81,38 @@ export class ViagemService {
       where: {
         data: MoreThan(dataAtual), 
         alunos: { ID_usuario: Equal(idAluno) }, 
+      },
+      relations: ['alunos', 'rota', 'veiculo', 'admin', 'motorista'],
+      order: {
+        data: 'ASC', 
+      },
+    });
+  }
+
+  async findAllHistoricoMotorista(idMotorista: number) {
+    const dataAtual = new Date();
+
+    return this.viagemRepository.find({
+      where: {
+        data: LessThan(dataAtual), 
+        motorista: idMotorista,
+      },
+      relations: ['alunos', 'rota', 'veiculo', 'admin', 'motorista'],
+      order: {
+        data: 'DESC', 
+      },
+    });
+  }
+
+  async findAllAgendaMotorista(idMotorista: number) {
+    const dataInicioDia = new Date();
+
+    dataInicioDia.setHours(0, 0, 0, 0);
+
+    return this.viagemRepository.find({
+      where: {
+        data: MoreThan(dataInicioDia), 
+        motorista: idMotorista, 
       },
       relations: ['alunos', 'rota', 'veiculo', 'admin', 'motorista'],
       order: {

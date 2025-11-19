@@ -14,7 +14,7 @@ export class Usuario {
   @IsNotEmpty()
   nome: string;
 
-  @Column({ type: 'varchar', length: 11 })
+  @Column({ type: 'varchar', length: 11 , unique: true })
   @IsNotEmpty()
   CPF: string;  
   
