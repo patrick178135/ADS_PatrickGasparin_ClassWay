@@ -11,10 +11,10 @@ type Viagem = {
   ID_viagem?: number;
   nome: string;
   data: string;
-  admin: { ID_usuario: number; nome: string } | null;
-  motorista: { ID_usuario: number; nome: string } | null;
-  rota: { ID_rota: number; nome: string, paradas?: any[] } | null;
-  veiculo: { ID_veiculo: number; modelo: string } | null;
+  admin: { ID_usuario: number; nome: string };
+  motorista: { ID_usuario: number; nome: string };
+  rota: { ID_rota: number; nome: string, paradas?: any[] };
+  veiculo: { ID_veiculo: number; modelo: string };
   alunos: { ID_usuario: number; nome: string }[];
 };
 const Viagem = () => {
@@ -35,10 +35,7 @@ const Viagem = () => {
   const [alunoMap, setAlunoMap] = useState<Map<number, string>>(new Map());
   const [refresh, setRefresh] = useState(false);
   const [showModalVer, setShowModalVer] = useState(false);
-  const [showModalEdit, setShowModalEdit] = useState(false);
   const [viagemSelecionada, setViagemSelecionada] = useState<Viagem | null>(null);
-  const [showModalConfirm, setShowModalConfirm] = useState(false);
-  const [viagemParaDeletar, setViagemParaDeletar] = useState<Viagem | null>(null);
   const [showModalAlunos, setShowModalAlunos] = useState(false);
   const [paradaSelecionada, setParadaSelecionada] = useState<number | null>(null);
   const [showModalConfirmValidacao, setShowModalConfirmValidacao] = useState(false);
@@ -63,42 +60,38 @@ const Viagem = () => {
     }
   };
 
-  //converter data para o formato datetime-local
-  const paraDatetimeLocal = (dataString: string): string => {
-    try {
-      const data = new Date(dataString);
-      const ano = data.getFullYear();
-      const mes = String(data.getMonth() + 1).padStart(2, '0');
-      const dia = String(data.getDate()).padStart(2, '0');
-      const hora = String(data.getHours()).padStart(2, '0');
-      const minuto = String(data.getMinutes()).padStart(2, '0');
-      return `${ano}-${mes}-${dia}T${hora}:${minuto}`;
-    } catch (error) {
-      return dataString;
-    }
-  };
-
   useEffect(() => {
-    carregarUsuario();
-    fetchViagens();
-    fetchAdmins();
-    fetchMotoristas();
-    fetchRotas();
-    fetchVeiculos();
-    fetchAlunos();
-  }, [refresh]);
-
-  const fetchViagens = async () => {
-    try {
+    const carregarDadosDoAluno = async () => {
       setLoading(true);
-      const dados = await viagemService.getViagens();
-      setViagens(dados);
-    } catch (error) {
-      console.error("Erro ao buscar vaigens:");
-    } finally {
-      setLoading(false);
+      try {
+        const dadosViagens = await viagemService.getViagensHistoricoMotorista(usuario!.sub);
+        console.log('Viagens carregadas:', dadosViagens);
+        setViagens(dadosViagens);
+
+        await Promise.all([
+          fetchAdmins(),
+          fetchMotoristas(),
+          fetchRotas(),
+          fetchVeiculos(),
+          fetchAlunos(),
+        ]);
+
+      } catch (error) {
+        console.error("Erro ao carregar dados da página:");
+        setMensagem("Falha ao carregar as viagens. Tente novamente.");
+        setTipoMensagem("error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (usuario) {
+      carregarDadosDoAluno();
+    } else {
+      setViagens([]);
     }
-  };
+
+  }, [usuario, refresh]);
 
   const fetchAdmins = async () => {
     try {
@@ -179,32 +172,10 @@ const Viagem = () => {
     setViagemSelecionada(null);
   };
 
-  // Abrir modal Edit
-  const handleEditar = (vaigem: Viagem) => {
-    setViagemSelecionada(vaigem);
-    setShowModalEdit(true);
-  };
-
-  // Fechar modal Edit
-  const handleFecharEdit = () => {
-    setShowModalEdit(false);
-    setViagemSelecionada(null);
-  };
-
   //Alert
   const handleCloseToast = () => {
     setMensagem(null);
     setTipoMensagem(null);
-  };
-
-  const handleConfirmarExclusao = (vaigem: Viagem) => {
-    setViagemParaDeletar(vaigem);
-    setShowModalConfirm(true);
-  };
-
-  const handleFecharConfirm = () => {
-    setShowModalConfirm(false);
-    setViagemParaDeletar(null);
   };
 
   const handleAbrirAlunos = () => {
@@ -249,74 +220,6 @@ const Viagem = () => {
     }
   };
 
-  // Atualizar 
-  const handleSalvar = async () => {
-    if (!viagemSelecionada?.ID_viagem) {
-      console.warn("Nenhuma viagem selecionada para atualizar.");
-      return;
-    }
-
-    const body = {
-      nome: viagemSelecionada.nome,
-      data: viagemSelecionada.data,
-      admin: viagemSelecionada.admin?.ID_usuario,    
-      motorista: viagemSelecionada.motorista?.ID_usuario,
-      rota: viagemSelecionada.rota?.ID_rota,        
-      veiculo: viagemSelecionada.veiculo?.ID_veiculo,  
-      alunos: viagemSelecionada.alunos.map(p => p.ID_usuario), 
-    };
-
-    if (!body.admin || !body.motorista || !body.rota || !body.veiculo) {
-      setMensagem("Todos os campos (Admin, Motorista, Rota, Veículo) são obrigatórios.");
-      setTipoMensagem("warning");
-      setTimeout(() => setMensagem(null), 3000);
-      return;
-    }
-
-    try {
-      console.log("Enviando body para atualização:", body);
-      await viagemService.updateViagem(viagemSelecionada.ID_viagem, body);
-
-      setMensagem("Viagem atualizada com sucesso!");
-      setTipoMensagem("success");
-      handleFecharEdit();
-      setRefresh(prev => !prev); 
-      
-    } catch (error) {
-      console.error("Erro ao atualizar Viagem:", error);
-      setMensagem("Ocorreu um erro ao tentar atualizar. Tente novamente.");
-      setTipoMensagem("error");
-    } finally {
-      setTimeout(() => {
-        setMensagem(null);
-        setTipoMensagem(null);
-      }, 3000);
-    }
-  };
-
-
-  const excluirViagem = async () => {
-    if (!viagemParaDeletar?.ID_viagem) {
-      console.error("ID da Viagem não encontrado para exclusão.");
-      return;
-    }
-
-    try {
-      await viagemService.deleteViagem(viagemParaDeletar?.ID_viagem);
-
-      setMensagem("Viagem DELETADA com sucesso!");
-      setTipoMensagem("success");
-      setRefresh(prev => !prev);
-
-    } catch (error) {
-      console.error("Erro ao excluir Viagem");
-      setMensagem("Erro ao excluir Viagem. Tente novamente.");
-      setTipoMensagem("error");
-    } finally {
-      handleFecharConfirm();
-    }
-  };
-
   const toggleAlunoSelecionado = (idAluno: number) => {
     const alunoObj = viagemSelecionada?.alunos.find(a => a.ID_usuario === idAluno);
     if (!alunoObj) return;
@@ -337,7 +240,6 @@ const Viagem = () => {
   };
 
   const handleAbrirValidacoes = async () => {
-
 
     const dadosValidacoes = await validacaoService.getValidacoesPorViagem(viagemSelecionada!.ID_viagem!);
     console.log('Validações carregadas:', dadosValidacoes);
@@ -360,7 +262,7 @@ const Viagem = () => {
         <a href="login">Voltar para o Login</a>
       </>
     );
-  if (usuario.perfil != 1) return <p>É preciso ser Administrador para acessar essa página</p>;
+  if (usuario.perfil != 2) return <p>É preciso ser Motorista para acessar essa página</p>;
   if (loading) return <Spinner animation="border" />;
 
   return (
@@ -396,11 +298,7 @@ const Viagem = () => {
       </ToastContainer>
 
       <Container className="mt-5 rounded-4 shadow p-5">
-        <h1 className="mb-4">Lista de Viagens </h1>
-
-        <div className="d-flex justify-content-end mb-3">
-          <Button href="create.viagem" className="mt-5 shadow">Adicionar Viagem</Button>
-        </div>
+        <h1 className="mb-4">Histórico de viagens de {usuario?.nome ?? "Usuário"} </h1>
 
         {/* 
 
@@ -433,14 +331,6 @@ const Viagem = () => {
                   <td>{u.nome}</td>
                   <td>{formatarData(u.data)}</td>
                   <td className="d-flex justify-content-center">
-                    <Button
-                      className="m-1 shadow"
-                      variant="outline-warning"
-                      size="sm"
-                      onClick={() => handleEditar(u)}
-                    >
-                      <i className="bi bi-pencil me-1"></i>
-                    </Button>
 
                     <Button
                       className="m-1 shadow"
@@ -451,14 +341,6 @@ const Viagem = () => {
                       <i className="bi bi-eye me-1"></i>
                     </Button>
 
-                    <Button
-                      className="m-1 shadow"
-                      variant="outline-danger"
-                      size="sm"
-                      onClick={() => handleConfirmarExclusao(u)}
-                    >
-                      <i className="bi bi-trash me-1"></i>
-                    </Button>
                   </td>
                 </tr>
               ))
@@ -539,252 +421,6 @@ const Viagem = () => {
 
             <Button variant="secondary" onClick={handleFecharVer}>
               Sair
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        {/* 
-
-
-        MODAL EDIT 
-        
-
-        */}
-
-        <Modal show={showModalEdit} onHide={handleFecharEdit} size="lg">
-          <Modal.Header closeButton>
-            <Modal.Title>Editar Viagem</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {viagemSelecionada && (
-              <Card className="shadow-sm border-0 p-3">
-                <Card.Body>
-                  <Form>
-                    <Card.Title className="mb-3">Informações da Viagem</Card.Title>
-
-                    <Row>
-                      <Col md={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Nome</Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={viagemSelecionada.nome}
-                            onChange={(e) =>
-                              setViagemSelecionada({
-                                ...viagemSelecionada,
-                                nome: e.target.value,
-                              })
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Data e Hora da Viagem:</Form.Label>
-                          <Form.Control
-                            id="dataHora"
-                            type="datetime-local"
-                            name="data"
-                            value={paraDatetimeLocal(viagemSelecionada.data)}
-                            onChange={(e) =>
-                              setViagemSelecionada({
-                                ...viagemSelecionada,
-                                data: new Date(e.target.value).toISOString(),
-                              })
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-
-                    <hr className="my-4" />
-
-                    <Row>
-                      <Col md={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Administrador</Form.Label>
-                          <Form.Select
-                            value={viagemSelecionada.admin?.ID_usuario ?? ""}
-                            onChange={(e) => {
-                              const adminId = Number(e.target.value);
-                              const adminObj = admins.find(a => a.ID_usuario === adminId);
-                              setViagemSelecionada({
-                                ...viagemSelecionada,
-                                admin: adminObj || null,
-                              });
-                            }}
-                          >
-                            <option value="">Selecione o Administrador</option>
-                            {admins.map((admin) => (
-                              <option key={admin.ID_usuario} value={admin.ID_usuario}>
-                                {admin.nome}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-
-                      <Col md={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Motorista</Form.Label>
-                          <Form.Select
-                            value={viagemSelecionada.motorista?.ID_usuario ?? ""}
-                            onChange={(e) => {
-                              const motoristaId = Number(e.target.value);
-                              const motoristaObj = motoristas.find(m => m.ID_usuario === motoristaId);
-                              setViagemSelecionada({
-                                ...viagemSelecionada,
-                                motorista: motoristaObj || null,
-                              });
-                            }}
-                          >
-                            <option value="">Selecione o Motorista</option>
-                            {motoristas.map((motorista) => (
-                              <option key={motorista.ID_usuario} value={motorista.ID_usuario}>
-                                {motorista.nome}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-
-                      <Col md={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Rota</Form.Label>
-                          <Form.Select
-                            value={viagemSelecionada.rota?.ID_rota ?? ""}
-                            onChange={(e) => {
-                              const rotaId = Number(e.target.value);
-                              const rotaObj = rotas.find(r => r.ID_rota === rotaId);
-                              setViagemSelecionada({
-                                ...viagemSelecionada,
-                                rota: rotaObj || null,
-                              });
-                            }}
-                          >
-                            <option value="">Selecione a Rota</option>
-                            {rotas.map((rota) => (
-                              <option key={rota.ID_rota} value={rota.ID_rota}>
-                                {rota.nome}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-
-                      <Col md={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Veículo</Form.Label>
-                          <Form.Select
-                            value={viagemSelecionada.veiculo?.ID_veiculo ?? ""}
-                            onChange={(e) => {
-                              const veiculoId = Number(e.target.value);
-                              const veiculoObj = veiculos.find(v => v.ID_veiculo === veiculoId);
-                              setViagemSelecionada({
-                                ...viagemSelecionada,
-                                veiculo: veiculoObj || null,
-                              });
-                            }}
-                          >
-                            <option value="">Selecione o Veículo</option>
-                            {veiculos.map((veiculo) => (
-                              <option key={veiculo.ID_veiculo} value={veiculo.ID_veiculo}>
-                                {veiculo.modelo}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-
-                      <Col>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Selecione os Alunos:</Form.Label>
-                          <Card className="p-3 border">
-                            {alunos.length === 0 ? (
-                              <p className="text-muted mb-0">Nenhum aluno cadastrado.</p>
-                            ) : (
-                              alunos.map((aluno) => (
-                                <Form.Check
-                                  key={aluno.ID_usuario}
-                                  type="checkbox"
-                                  id={`aluno-${aluno.ID_usuario}`}
-                                  label={aluno.nome}
-                                  checked={viagemSelecionada.alunos?.some(
-                                    (p) => p.ID_usuario === aluno.ID_usuario
-                                  )}
-                                  onChange={(e) => {
-                                    const checked = e.target.checked;
-
-                                    const alunosAtuais = viagemSelecionada.alunos || [];
-
-                                    const novosAlunos = checked
-                                      ? [...viagemSelecionada.alunos, aluno]
-                                      : viagemSelecionada.alunos.filter(
-                                        (p) => p.ID_usuario !== aluno.ID_usuario
-                                      );
-                                    setViagemSelecionada({ ...viagemSelecionada, alunos: novosAlunos });
-                                  }}
-                                />
-                              ))
-                            )}
-                          </Card>
-                        </Form.Group>
-
-                      </Col>
-                    </Row>
-
-                  </Form>
-                </Card.Body>
-              </Card>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleFecharEdit}>
-              Cancelar
-            </Button>
-            <Button variant="primary" onClick={handleSalvar}>
-              Salvar
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        {/* 
-
-
-        MODAL CONFIRMAR EXCLUSÃO 
-
-        
-        */}
-
-        <Modal show={showModalConfirm} onHide={handleFecharConfirm} centered>
-          <Modal.Header closeButton className="bg-danger text-white">
-            <Modal.Title>
-              <i className="bi bi-exclamation-triangle-fill me-2"></i>
-              Confirmação de Exclusão
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="py-4">
-            {viagemParaDeletar && (
-              <>
-                <p className="lead">
-                  Você tem certeza que deseja EXCLUIR a Viagem:
-                </p>
-                <h4 className="text-danger text-center my-3">
-                  {viagemParaDeletar.nome} (ID: {viagemParaDeletar.ID_viagem})
-                </h4>
-                <p className="text-muted text-center">
-                  Esta ação é irreversível.
-                </p>
-              </>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleFecharConfirm}>
-              Cancelar
-            </Button>
-            <Button variant="danger" onClick={excluirViagem}>
-              <i className="bi bi-trash me-2"></i>
-              Excluir Permanentemente
             </Button>
           </Modal.Footer>
         </Modal>
