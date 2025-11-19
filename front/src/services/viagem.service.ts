@@ -36,6 +36,26 @@ class ViagemService {
     }
   }
 
+  async getViagensHistoricoMotorista(id: number) {
+    try {
+      const response = await api.get(`/viagem/historico/motorista/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao buscar viagens:");
+      throw error;
+    }
+  }
+
+  async getViagensAgendaMotorista(id: number) {
+    try {
+      const response = await api.get(`/viagem/agenda/motorista/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao buscar viagens:");
+      throw error;
+    }
+  }
+
   async addViagem(data: any) {
     try {
       const response = await api.post("/viagem", data);
