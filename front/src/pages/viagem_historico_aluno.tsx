@@ -11,10 +11,10 @@ type Viagem = {
   ID_viagem?: number;
   nome: string;
   data: string;
-  admin: number;
-  motorista: number;
-  rota: number;
-  veiculo: number;
+  admin: { ID_usuario: number; nome: string };
+  motorista: { ID_usuario: number; nome: string };
+  rota: { ID_rota: number; nome: string, paradas?: any[] };
+  veiculo: { ID_veiculo: number; modelo: string };
   alunos: { ID_usuario: number; nome: string }[];
 };
 const ViagemHistorico = () => {
@@ -54,7 +54,6 @@ const ViagemHistorico = () => {
 
   useEffect(() => {
     const carregarDadosDoAluno = async () => {
-      console.log("useEffect disparado: Usuário definido. Buscando viagens para o ID:", usuario!.sub);
       setLoading(true);
       try {
         const dadosViagens = await viagemService.getViagensHistoricoAluno(usuario!.sub);
@@ -293,19 +292,22 @@ const ViagemHistorico = () => {
                     </Col>
                     <Col md={6} xs={12}>
                       <strong><i className="bi bi-person-gear me-2"></i>Administrador:</strong>
-                      <p className="ms-4 mb-0">{adminMap.get(viagemSelecionada.admin) ?? "Não Encontrada"}</p>
+                      <p className="ms-4 mb-0">{viagemSelecionada.admin?.nome ?? "Não Encontrado"}</p>
                     </Col>
+
                     <Col md={6} xs={12}>
                       <strong><i className="bi bi-person-badge me-2"></i>Motorista:</strong>
-                      <p className="ms-4 mb-0">{motoristaMap.get(viagemSelecionada.motorista) ?? "Não Encontrada"}</p>
+                      <p className="ms-4 mb-0">{viagemSelecionada.motorista?.nome ?? "Não Encontrado"}</p>
                     </Col>
+
                     <Col md={6} xs={12}>
                       <strong><i className="bi bi-map me-2"></i>Rota:</strong>
-                      <p className="ms-4 mb-0">{rotaMap.get(viagemSelecionada.rota)?.nome ?? "Não Encontrada"}</p>
+                      <p className="ms-4 mb-0">{viagemSelecionada.rota?.nome ?? "Não Encontrada"}</p>
                     </Col>
+
                     <Col md={6} xs={12}>
                       <strong><i className="bi bi-bus-front-fill me-2"></i>Veículo:</strong>
-                      <p className="ms-4 mb-0">{VeiculoMap.get(viagemSelecionada.veiculo) ?? "Não Encontrada"}</p>
+                      <p className="ms-4 mb-0">{viagemSelecionada.veiculo?.modelo ?? "Não Encontrado"}</p>
                     </Col>
                   </Row>
                 </Card.Body>

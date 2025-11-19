@@ -32,6 +32,16 @@ export class ViagemController {
         return this.viagemService.findAllAgendaAluno(idAluno);
     }
 
+    @Get('historico/motorista/:idMotorista')
+    findAllHistoricoMotorista(@Param('idMotorista', ParseIntPipe) idMotorista: number) {
+        return this.viagemService.findAllHistoricoMotorista(idMotorista);
+    }
+
+    @Get('agenda/motorista/:idMotorista')
+    findAllAgendaMotorista(@Param('idMotorista', ParseIntPipe) idMotorista: number) {
+        return this.viagemService.findAllAgendaMotorista(idMotorista);
+    }
+
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateViagemDto: UpdateViagemDto) {
         return this.viagemService.update(+id, updateViagemDto);
