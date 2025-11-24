@@ -7,7 +7,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: 'http://localhost:3000', // endereço front-end
-    credentials: true, // enviar cookies ou headers de autenticação
+    credentials: true, 
   });
 
   // Configuração global de validação

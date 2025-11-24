@@ -77,7 +77,7 @@ const Login = () => {
 
   return (
     <>
-    <title>Loign</title>
+    <title>Login</title>
     
     <div className="row vh-100">
       <div
@@ -140,11 +140,6 @@ const Login = () => {
             </Col>
           </Row>
 
-          <div className="d-flex justify-content-around p-3">
-            <Button className="btn btn-light w-100" href="usuario">
-              Lista de Usuários
-            </Button>
-          </div>
         </div>
       </div>
     </div>
