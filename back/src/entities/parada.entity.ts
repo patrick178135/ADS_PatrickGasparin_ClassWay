@@ -14,7 +14,7 @@ export class Parada {
   nome: string;
 
   @ManyToOne(() => Cidade, cidade => cidade.ID_cidade)
-  @JoinColumn({ name: 'destino' })
+  @JoinColumn({ name: 'cidade' })
   @Column()
   @IsNotEmpty()
   cidade : number;

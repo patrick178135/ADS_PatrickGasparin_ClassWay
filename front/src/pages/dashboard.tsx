@@ -26,30 +26,44 @@ const Dashboard = () => {
     
     <div className="container-sm">
       <div className="row">
-        <div className="col-12 col-md-4 bg-warning p-3 text-white text-center">
+        <div className="col-12 col-md-4 p-3 text-white text-center">
           <div className="card border-primary mb-3">
-            <div className="card-header">Header</div>
+            <div className="card-header">Gráfico</div>
             <div className="card-body text-primary">
-              <h5 className="card-title">Primary card title</h5>
-              <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+              <h5 className="card-title">Dados de alunos</h5>
+              <p className="card-text">Informação</p>
             </div>
           </div>
         </div>
-        <div className="col-12 col-md-4 bg-danger p-3 text-white text-center">
+        <div className="col-12 col-md-4  p-3 text-white text-center">
         <div className="card border-primary mb-3">
-            <div className="card-header">Header</div>
+            <div className="card-header">Gráfico</div>
             <div className="card-body text-primary">
-              <h5 className="card-title">Primary card title</h5>
-              <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+              <h5 className="card-title">Dados de viagem</h5>
+              <p className="card-text">Informação.</p>
             </div>
           </div>
         </div>
-        <div className="col-12 col-md-4 bg-warning p-3 text-white text-center">
+        <div className="col-12 col-md-4 p-3 text-white text-center">
         <div className="card border-primary mb-3">
-            <div className="card-header">Header</div>
+            <div className="card-header">Gráfico</div>
             <div className="card-body text-primary">
-              <h5 className="card-title">Primary card title</h5>
-              <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+              <h5 className="card-title">Dados de Veículos</h5>
+              <p className="card-text">Informação</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row mt-4">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-body p-0">
+              <img 
+                src="/img/Dashboard.png" 
+                alt="Dashboard de Visão Geral" 
+                className="img-fluid w-100" 
+                style={{ borderRadius: '0.5rem' }}
+              />
             </div>
           </div>
         </div>
