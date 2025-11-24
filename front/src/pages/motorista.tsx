@@ -302,7 +302,11 @@ const Motorista = () => {
                   <td>{u.nome}</td>
                   <td>{u.email}</td>
                   <td>{u.CPF}</td>
-                  <td>{u.ativo ? "Sim" : "Não"}</td>
+                  <td>
+                    <span className={`badge fs-6 rounded-pill ms-2 bg-${u.ativo ? 'success' : 'danger'}`}>
+                      {u.ativo ? "Ativo" : "Inativo"}
+                    </span>
+                  </td>
                   <td>{cidadeMap.get(u.cidade) || u.cidade}</td>
                   <td className="d-flex justify-content-center">
                     <Button
